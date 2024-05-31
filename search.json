@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Michael Dismorr",
+    "section": "",
+    "text": "I am a M.D., PhD and postdoctoral researcher at Karolinska Institutet in the cardiothoracic surgery research group.\nHere I will primarily post guides and tutorials related to epidemiology in R. Topics will range from survival analysis with regression standardization and inverse probability of treatment weighting (IPTW) to more workflow related guides. Feel free to reach out with comments or suggestions.\nFor more content like this, check out R-bloggers."
+  },
+  {
+    "objectID": "about.html#about",
+    "href": "about.html#about",
+    "title": "Michael Dismorr",
+    "section": "",
+    "text": "I am a M.D., PhD and postdoctoral researcher at Karolinska Institutet in the cardiothoracic surgery research group.\nHere I will primarily post guides and tutorials related to epidemiology in R. Topics will range from survival analysis with regression standardization and inverse probability of treatment weighting (IPTW) to more workflow related guides. Feel free to reach out with comments or suggestions.\nFor more content like this, check out R-bloggers."
+  },
+  {
+    "objectID": "about.html#intrests",
+    "href": "about.html#intrests",
+    "title": "Michael Dismorr",
+    "section": "Intrests",
+    "text": "Intrests\n\nR programming\nBiostatistics\nSurvival analysis\nGlobal health\nMedTech\nAI"
+  },
+  {
+    "objectID": "about.html#experience",
+    "href": "about.html#experience",
+    "title": "Michael Dismorr",
+    "section": "Experience",
+    "text": "Experience\nPostdoctoral researcher | 2022 - Current\nKarolinska Institutet | Stockholm, Sweden\nCo-founder | 2022 - Current\nDismorr Medical Ltd. | Nairobi, Kenya\nPhD student | 2017 - 2022\nKarolinska Institutet | Stockholm, Sweden\nSurgeon, licensed physician | 2018 - 2020\nKarolinska University Hospital, Dept. Cardiothoracic surgery | Stockholm, Sweden\nMedical internship | 2017 - 2018\nKarolinska University Hospital | Stockholm, Sweden\nJunior surgeon | 2016 - 2017\nKarolinska University Hospital, Dept. Cardiothoracic surgery | Stockholm, Sweden"
+  },
+  {
+    "objectID": "about.html#education",
+    "href": "about.html#education",
+    "title": "Michael Dismorr",
+    "section": "Education",
+    "text": "Education\nPhD, Cardiothoracic surgery epidemiology | 2017 - 2022\nKarolinska Institutet | Stockholm, Sweden\nMedical school, MD | 2011 - 2016\nKarolinska Institutet | Stockholm, Sweden\nGlobal health, field studies | 2015 - 2016\nKarolinska Institutet | Tanzania"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "michaeldismorrmd.github.io",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+  }
+]
