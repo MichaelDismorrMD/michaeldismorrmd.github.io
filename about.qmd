@@ -1,9 +1,68 @@
 ---
-title: "About"
+title: "Michael Dismorr"
+about:
+  template: trestles
+  image: assets/avatar.jpg
+  image-shape: round
+  links:
+    - icon: twitter
+      text: twitter
+      href: https://twitter.com
+    - icon: github
+      text: Github
+      href: https://github.com
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/michaeldismorr
 ---
 
-About this site
+## About
 
-```{r}
-1 + 1
-```
+I am a M.D., PhD and postdoctoral researcher at Karolinska Institutet in the cardiothoracic surgery research group. 
+
+Here I will primarily post guides and tutorials related to epidemiology in R. Topics will range from survival analysis with regression standardization and inverse probability of treatment weighting (IPTW) to more workflow related guides. Feel free to reach out with comments or suggestions.  
+  
+For more content like this, check out [R-bloggers](https://www.r-bloggers.com). 
+
+## Intrests
+
+ * R programming
+ * Biostatistics
+ * Survival analysis
+ * Global health
+ * MedTech
+ * AI
+
+## Experience
+
+Postdoctoral researcher | 2022 - Current  
+Karolinska Institutet | Stockholm, Sweden
+
+Co-founder | 2022 - Current  
+Dismorr Medical Ltd. | Nairobi, Kenya
+
+PhD student | 2017 - 2022  
+Karolinska Institutet | Stockholm, Sweden
+
+Surgeon, licensed physician | 2018 - 2020  
+Karolinska University Hospital, Dept. Cardiothoracic surgery | Stockholm, Sweden
+
+Medical internship | 2017 - 2018  
+Karolinska University Hospital | Stockholm, Sweden
+
+Junior surgeon | 2016 - 2017  
+Karolinska University Hospital, Dept. Cardiothoracic surgery | Stockholm, Sweden
+
+## Education
+
+PhD, Cardiothoracic surgery epidemiology | 2017 - 2022      
+Karolinska Institutet | Stockholm, Sweden
+
+Medical school, MD | 2011 - 2016    
+Karolinska Institutet | Stockholm, Sweden
+
+Global health, field studies | 2015 - 2016    
+Karolinska Institutet | Tanzania
+
+
+
