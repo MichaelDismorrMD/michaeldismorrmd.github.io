@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Dismorr">
+<meta name="dcterms.date" content="2021-11-15">
+
+<title>michaeldismorrmd.github.io - Age-, and sex-adjusted incidence rates</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">michaeldismorrmd.github.io</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog_start.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Age-, and sex-adjusted incidence rates</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">incidence-rate</div>
+                <div class="quarto-category">poisson-regression</div>
+                <div class="quarto-category">survival-analysis</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Michael Dismorr </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 15, 2021</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#calculating-crude-incidence-rate" id="toc-calculating-crude-incidence-rate" class="nav-link active" data-scroll-target="#calculating-crude-incidence-rate">Calculating crude incidence rate</a></li>
+  <li><a href="#obtaining-estimated-incidence-rates-using-poisson-regression" id="toc-obtaining-estimated-incidence-rates-using-poisson-regression" class="nav-link" data-scroll-target="#obtaining-estimated-incidence-rates-using-poisson-regression">Obtaining estimated incidence rates using poisson regression</a></li>
+  <li><a href="#age--and-sex-adjusted-incidence-rates-using-poisson-regression" id="toc-age--and-sex-adjusted-incidence-rates-using-poisson-regression" class="nav-link" data-scroll-target="#age--and-sex-adjusted-incidence-rates-using-poisson-regression">Age- and sex-adjusted incidence rates using poisson regression</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>In this first post I’m going to present a way of obtaining age- and sex-adjusted incidence rates using poisson regression in R. This will be similar to what is done in Stata as described <a href="https://www.statalist.org/forums/forum/general-stata-discussion/general/1431921-age-adjusted-rates-using-a-poisson-regression">here</a>.</p>
+<p>I’ve written a R function that’s available for download <a href="age_sex_adjust.R">here.</a> The script can be sourced ( <code>source("age_sex_adjust.R")</code> ) and then the function <code>age_sex_adjust()</code> can be used as is. Note that the time variable will have to be in days, and the incidence will be presented as per 100 person-years. The code will also be described step by step below.</p>
+<hr>
+<p>There are, as usual, several ways to calculate adjusted incidence rates in R. I’ve chosen to use the package <a href="https://marginaleffects.com">marginaleffects</a> by <a href="https://x.com/vincentab">Vincent Arel-Bundock,</a> Noah Greifer and Andrew Heiss because it has a lot of nice features and useful implications in causal inference. Specifically, we will use the function <code>avg_predictions()</code> from <code>marginaleffects</code> to generate the the adjusted incidence rates.</p>
+<p>But first we start off with a little bit of background on what an incidence rate is. It is simply a measure of a number of occurrences (a count) in a population over the total population time. For example, in a population of 10 people, each followed 1 year, there was one case of death. In that population, the incidence rate of death would 1 per 10 person-years. In observational data, we often have larger cohorts with varying follow-up time and censoring. The calculation is of course the same, using the formula below:<br>
+<br> <span class="math display">\[\text{Incidence rate} = \frac{\text{Number of occurrences}}{\sum_{\text{Persons}}{\text{Time in study}}}\]</span> <br></p>
+<hr>
+<section id="calculating-crude-incidence-rate" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-crude-incidence-rate">Calculating crude incidence rate</h3>
+<p>To illustrate, we will now use the <code>colon</code> dataset from the <code>survival</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Running <code>?survival::colon</code> tells us the following:</p>
+<blockquote class="blockquote">
+<p>Data from one of the first successful trials of adjuvant chemotherapy for colon cancer</p>
+</blockquote>
+<table class="table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>Patient id</td>
+</tr>
+<tr class="even">
+<td>study</td>
+<td>1 for all patients</td>
+</tr>
+<tr class="odd">
+<td>rx</td>
+<td>1 for all patients</td>
+</tr>
+<tr class="even">
+<td>sex</td>
+<td>1 = male</td>
+</tr>
+<tr class="odd">
+<td>age</td>
+<td>in years</td>
+</tr>
+<tr class="even">
+<td>obstruct</td>
+<td>colon obstruction by tumour</td>
+</tr>
+<tr class="odd">
+<td>perfor</td>
+<td>performation of colon</td>
+</tr>
+<tr class="even">
+<td>adhere</td>
+<td>adherence to nearby organs</td>
+</tr>
+<tr class="odd">
+<td>nodes</td>
+<td>number of positive lymph nodes</td>
+</tr>
+<tr class="even">
+<td>time</td>
+<td>days until event or censoring</td>
+</tr>
+<tr class="odd">
+<td>status</td>
+<td>censoring status</td>
+</tr>
+<tr class="even">
+<td>differ</td>
+<td>tumour differentiation — 1 = well, 2 = moderate, 3 = poor</td>
+</tr>
+<tr class="odd">
+<td>extent</td>
+<td>extent of local spread — 1 = submucosa, 2 = muscle, 3 = serosa, 4 = continious</td>
+</tr>
+<tr class="even">
+<td>surg</td>
+<td>time from surgery to registration — 0 = short, 1 = long</td>
+</tr>
+<tr class="odd">
+<td>node4</td>
+<td>more than 4 positive lymph nodes</td>
+</tr>
+<tr class="even">
+<td>etype</td>
+<td>event type — 1 = recurrence, 2 = death</td>
+</tr>
+</tbody>
+</table>
+<p>OK, so now that we understand the data, let’s start calculating crude incidence rates for death among the different treatment groups:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using the colon dataset from the survival package</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Only keep records related to the death outcome</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>colon_death <span class="ot">&lt;-</span> survival<span class="sc">::</span>colon <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(etype <span class="sc">==</span> <span class="dv">2</span>) </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Time is divided by 365.25/100 to get the time in days </span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># first to years, then to 100 person-years</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>colon_death <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(rx) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                <span class="fu">summarise</span>(<span class="at">Events =</span> <span class="fu">sum</span>(status), </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Time =</span> <span class="fu">sum</span>(time<span class="sc">/</span><span class="fl">365.25</span><span class="sc">/</span><span class="dv">100</span>), </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Rate =</span> Events <span class="sc">/</span> Time, </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                          <span class="at">lower =</span> <span class="fu">poisson.test</span>(Events, Time)<span class="sc">$</span>conf.int[<span class="dv">1</span>], </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                          <span class="at">upper =</span> <span class="fu">poisson.test</span>(Events, Time)<span class="sc">$</span>conf.int[<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  rx      Events  Time  Rate lower upper
+  &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Obs        168  13.8 12.2  10.4  14.2 
+2 Lev        161  13.7 11.7  10.0  13.7 
+3 Lev+5FU    123  15.0  8.22  6.83  9.80</code></pre>
+</div>
+</div>
+<p>Now we compare to the calculated rates with rates obtained from the <code>survRate()</code> function from the <a href="https://cran.r-project.org/package=biostat3">biostat3</a> package:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(biostat3)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">survRate</span>(<span class="fu">Surv</span>(time<span class="sc">/</span><span class="fl">365.25</span><span class="sc">/</span><span class="dv">100</span>, status) <span class="sc">~</span> rx, <span class="at">data =</span> colon_death) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(rx, event, tstop, rate, lower, upper) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">Events =</span> event, </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">Time =</span> tstop, </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">Rate =</span> rate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  rx      Events  Time  Rate lower upper
+  &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Obs        168  13.8 12.2  10.4  14.2 
+2 Lev        161  13.7 11.7  10.0  13.7 
+3 Lev+5FU    123  15.0  8.22  6.83  9.80</code></pre>
+</div>
+</div>
+<p>Good, the incidence rates are identical. The observational patients had an mortality incidence rate of 12.2 per 100 person-years, compared to the Lev+5-FU treated patients with an incidence rate of 8.22 per 100 person-years. Now, let’s try and repeat these results with poisson regression.</p>
+</section>
+<section id="obtaining-estimated-incidence-rates-using-poisson-regression" class="level3">
+<h3 class="anchored" data-anchor-id="obtaining-estimated-incidence-rates-using-poisson-regression">Obtaining estimated incidence rates using poisson regression</h3>
+<p>Here we use the <a href="https://broom.tidymodels.org/">broom</a> package <code>tidy()</code> function to obtain exponentiated estimates:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model to estimate IRR using offset</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>poisson_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(status <span class="sc">~</span> rx <span class="sc">+</span> <span class="fu">offset</span>(<span class="fu">log</span>(time<span class="sc">/</span><span class="fl">365.25</span><span class="sc">/</span><span class="dv">100</span>)), </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">family =</span> poisson, <span class="at">data =</span> colon_death)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Exponentiate the estimate to obtain IRR</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(poisson_fit, <span class="at">exponentiate =</span> T, <span class="at">conf.int =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 7
+  term        estimate std.error statistic   p.value conf.low conf.high
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)   12.2      0.0772    32.4   3.13e-230   10.4      14.1  
+2 rxLev          0.965    0.110     -0.324 7.46e-  1    0.777     1.20 
+3 rxLev+5FU      0.675    0.119     -3.32  9.16e-  4    0.534     0.850</code></pre>
+</div>
+</div>
+<p>The Intercept estimate here is the estimated IR for the reference level, i.e.&nbsp;the Obs group.</p>
+<p>To get estimated IR of Lev+5FU treated:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>lev_5fu <span class="ot">&lt;-</span> <span class="fu">predict</span>(poisson_fit, </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">rx =</span> <span class="st">"Lev+5FU"</span>, <span class="at">time =</span> <span class="dv">36525</span>), </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">type =</span> <span class="st">"link"</span>, <span class="at">se.fit =</span> T)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(lev_5fu) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Treatment =</span> <span class="st">"Lev+5FU"</span>, </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">IR =</span> <span class="fu">exp</span>(fit), </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">lower =</span> <span class="fu">exp</span>(fit <span class="sc">-</span> (<span class="fl">1.96</span> <span class="sc">*</span> se.fit)), </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">upper =</span> <span class="fu">exp</span>(fit <span class="sc">+</span> (<span class="fl">1.96</span> <span class="sc">*</span> se.fit)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  Treatment    IR lower upper
+  &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Lev+5FU    8.22  6.88  9.80</code></pre>
+</div>
+</div>
+<p>Here, the confidence interval needs to be calculated on the <span class="math inline">\(\log\)</span> scale and then exponentiated back. This will cause the confidence interval to not be centered around the estimate.</p>
+<p>A poisson model can model <span class="math inline">\(\log\text{incidence rates (ratios)}\)</span> when we use the time variable as an offset. Therefore, we can include covariates in the model to be accounted for, such as age and sex.</p>
+</section>
+<section id="age--and-sex-adjusted-incidence-rates-using-poisson-regression" class="level3">
+<h3 class="anchored" data-anchor-id="age--and-sex-adjusted-incidence-rates-using-poisson-regression">Age- and sex-adjusted incidence rates using poisson regression</h3>
+<p>First, we’ll do it using my <code>age_sex_adjust()</code> function</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"age_sex_adjust.R"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage: age_sex_adjust(data, group, age, sex, event, time)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">age_sex_adjust</span>(colon_death, rx, age, sex, status, time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Treatment        IR  Lower_CI  Upper_CI
+1   Lev+5FU  8.245483  6.786784  9.704182
+2       Obs 12.211861 10.362612 14.061109
+3       Lev 11.819634  9.990691 13.648577</code></pre>
+</div>
+</div>
+<p>Here we see that the adjusted rates are very similar to the crude rates calculated above. Since this data comes from a randomized trial, this is expected and can be taken as a sign that the randomization worked.</p>
+<p>Now, let’s do the some thing but without using the ready made function to see how it works under the hood.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model using offset to estimate IRR</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>poisson_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(status <span class="sc">~</span> rx <span class="sc">*</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> sex <span class="sc">+</span> <span class="fu">offset</span>(<span class="fu">log</span>(<span class="fu">as.numeric</span>(time))), </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> colon_death, </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">family =</span> poisson)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new dataset where time is converted to 36525 days (100 years)</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>newdat <span class="ot">&lt;-</span> colon_death <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">time =</span> <span class="dv">36525</span>) </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Use avg_predictions to estimate what the incidence rate would have been if </span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># the entire population would have been treated according to each level of rx</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">avg_predictions</span>(poisson_fit, </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variables =</span> <span class="st">"rx"</span>, </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>                          <span class="at">newdata =</span> <span class="fu">transform</span>(colon_death, <span class="at">time =</span> <span class="dv">36525</span>), </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>                          <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>result <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(rx, estimate, conf.low, conf.high)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Estimate CI low CI high
+     8.25   6.79     9.7
+    12.21  10.36    14.1
+    11.82   9.99    13.6
+
+Columns: rx, estimate, conf.low, conf.high </code></pre>
+</div>
+</div>
+<p>The numbers are identical to the ones obtained from the <code>age_sex_adjust()</code> function, which is logical since we did the same thing as the function does.<br>
+A few finishing notes. Here I included age as a quadratic term, and as an interaction with exposure. These are modeling decisions one will have to take, however the model could have been only a main effects model such as:<br>
+<br> <span class="math display">\[\log\lambda = \beta_0 + \beta_1\text{rxLev} + \beta_2\text{rxLev+5FU} + \beta_3\text{age} + \beta_4\text{sex}\]</span> <br> Regarding the interaction term, a good explanation was given in the Stata forum in <a href="https://www.statalist.org/forums/forum/general-stata-discussion/general/1431921-age-adjusted-rates-using-a-poisson-regression">this</a> post.</p>
+<p>For anyone who wants to read more, I recommend the course material from the PhD course <strong>Biostatistics III</strong> at Karolinska Institutet, available <a href="https://biostat3.net">here</a>.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
