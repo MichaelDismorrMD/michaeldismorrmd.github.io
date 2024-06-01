@@ -1,0 +1,181 @@
+---
+title: "Age-, and sex-adjusted incidence rates"
+author: "Michael Dismorr"
+date: "2021-11-15"
+date-modified: "2024-06-01"
+categories: [R, incidence-rate, poisson-regression, survival-analysis]
+---
+
+In this first post I'm going to present a way of obtaining age- and sex-adjusted incidence rates using poisson regression in R. This will be similar to what is done in Stata as described [here](https://www.statalist.org/forums/forum/general-stata-discussion/general/1431921-age-adjusted-rates-using-a-poisson-regression).
+
+I've written a R function that's available for download [here.](age_sex_adjust.R) The script can be sourced ( `source("age_sex_adjust.R")` ) and then the function `age_sex_adjust()` can be used as is. Note that the time variable will have to be in days, and the incidence will be presented as per 100 person-years. The code will also be described step by step below.
+
+***
+
+There are, as usual, several ways to calculate adjusted incidence rates in R. I've chosen to use the package [marginaleffects](https://marginaleffects.com) by [Vincent Arel-Bundock, ](https://x.com/vincentab) Noah Greifer and Andrew Heiss because it has a lot of nice features and useful implications in causal inference. Specifically, we will use the function `avg_predictions()` from `marginaleffects` to generate the the adjusted incidence rates. 
+
+
+But first we start off with a little bit of background on what an incidence rate is. It is simply a measure of a number of occurrences (a count) in a population over the total population time. For example, in a population of 10 people, each followed 1 year, there was one case of death. In that population, the incidence rate of death would 1 per 10 person-years. In observational data, we often have larger cohorts with varying follow-up time and censoring.  The calculation is of course the same, using the formula below:   
+<br>
+$$\text{Incidence rate} = \frac{\text{Number of occurrences}}{\sum_{\text{Persons}}{\text{Time in study}}}$$
+<br>
+  
+
+***
+
+### Calculating crude incidence rate  
+
+To illustrate, we will now use the `colon` dataset from the `survival` package. 
+
+
+```{r}
+#| message: false
+#| warning: false
+library(survival)
+library(dplyr)
+library(broom)
+```
+
+Running `?survival::colon` tells us the following:
+
+> Data from one of the first successful trials of adjuvant chemotherapy for colon cancer  
+
+Variable | Explanation
+-------- | -----------
+id | Patient id
+study | 1 for all patients
+rx | 1 for all patients
+sex | 1 = male  
+age | in years  
+obstruct |colon obstruction by tumour  
+perfor | performation of colon  
+adhere | adherence to nearby organs  
+nodes | number of positive lymph nodes  
+time | days until event or censoring  
+status | censoring status  
+differ | tumour differentiation --- 1 = well, 2 = moderate, 3 = poor  
+extent | extent of local spread --- 1 = submucosa, 2 = muscle, 3 = serosa, 4 = continious  
+surg | time from surgery to registration --- 0 = short, 1 = long  
+node4 | more than 4 positive lymph nodes  
+etype | event type --- 1 = recurrence, 2 = death  
+
+OK, so now that we understand the data, let's start calculating crude incidence rates for death among the different treatment groups:    
+
+```{r}
+#| message: false
+
+# Using the colon dataset from the survival package
+
+# Only keep records related to the death outcome
+colon_death <- survival::colon %>% dplyr::filter(etype == 2) 
+
+# Time is divided by 365.25/100 to get the time in days 
+# first to years, then to 100 person-years
+
+colon_death %>% group_by(rx) %>% 
+                summarise(Events = sum(status), 
+                          Time = sum(time/365.25/100), 
+                          Rate = Events / Time, 
+                          lower = poisson.test(Events, Time)$conf.int[1], 
+                          upper = poisson.test(Events, Time)$conf.int[2])
+```
+Now we compare to the calculated rates with rates obtained from the `survRate()` function from the [biostat3](https://cran.r-project.org/package=biostat3) package:
+
+```{r}
+#| message: false
+
+library(biostat3)
+survRate(Surv(time/365.25/100, status) ~ rx, data = colon_death) %>% 
+  dplyr::select(rx, event, tstop, rate, lower, upper) %>% 
+  as_tibble() %>% 
+  dplyr::rename(Events = event, 
+                Time = tstop, 
+                Rate = rate)
+
+```
+  
+Good, the incidence rates are identical. The observational patients had an mortality incidence rate of 12.2 per 100 person-years, compared to the Lev+5-FU treated patients with an incidence rate of 8.22 per 100 person-years. Now, let's try and repeat these results with poisson regression. 
+
+
+### Obtaining estimated incidence rates using poisson regression
+
+Here we use the [broom](https://broom.tidymodels.org/) package `tidy()` function to obtain exponentiated estimates:
+  
+  
+```{r}
+# Fit the model to estimate IRR using offset
+poisson_fit <- glm(status ~ rx + offset(log(time/365.25/100)), 
+                   family = poisson, data = colon_death)
+
+# Exponentiate the estimate to obtain IRR
+tidy(poisson_fit, exponentiate = T, conf.int = T)
+```
+The Intercept estimate here is the estimated IR for the reference level, i.e. the Obs group. 
+
+To get estimated IR of Lev+5FU treated:
+
+```{r}
+lev_5fu <- predict(poisson_fit, 
+                   newdata = data.frame(rx = "Lev+5FU", time = 36525), 
+                   type = "link", se.fit = T)
+
+as_tibble(lev_5fu) %>% summarise(Treatment = "Lev+5FU", 
+                                 IR = exp(fit), 
+                                 lower = exp(fit - (1.96 * se.fit)), 
+                                 upper = exp(fit + (1.96 * se.fit)))
+
+```
+Here, the confidence interval needs to be calculated on the $\log$ scale and then exponentiated back. This will cause the confidence interval to not be centered around the estimate.  
+
+A poisson model can model $\log\text{incidence rates (ratios)}$ when we use the time variable as an offset. Therefore, we can include covariates in the model to be accounted for, such as age and sex.
+
+### Age- and sex-adjusted incidence rates using poisson regression
+
+First, we'll do it using my `age_sex_adjust()` function
+
+```{r}
+source("age_sex_adjust.R")
+# Usage: age_sex_adjust(data, group, age, sex, event, time)
+
+age_sex_adjust(colon_death, rx, age, sex, status, time)
+```
+Here we see that the adjusted rates are very similar to the crude rates calculated above. Since this data comes from a randomized trial, this is expected and can be taken as a sign that the randomization worked.  
+
+Now, let's do the some thing but without using the ready made function to see how it works under the hood. 
+
+```{r}
+library(marginaleffects)
+
+# Fit the model using offset to estimate IRR
+poisson_fit <- glm(status ~ rx * I(age^2) + sex + offset(log(as.numeric(time))), 
+                   data = colon_death, 
+                   family = poisson)
+
+# Create a new dataset where time is converted to 36525 days (100 years)
+newdat <- colon_death %>% mutate(time = 36525) 
+
+# Use avg_predictions to estimate what the incidence rate would have been if 
+# the entire population would have been treated according to each level of rx
+result <- avg_predictions(poisson_fit, 
+                          variables = "rx", 
+                          newdata = transform(colon_death, time = 36525), 
+                          type = "response")
+
+result %>% dplyr::select(rx, estimate, conf.low, conf.high)
+
+
+
+```
+The numbers are identical to the ones obtained from the `age_sex_adjust()` function, which is logical since we did the same thing as the function does.  
+A few finishing notes. Here I included age as a quadratic term, and as an interaction with exposure. These are modeling decisions one will have to take, however the model could have been only a main effects model such as:  
+<br>
+$$\log\lambda = \beta_0 + \beta_1\text{rxLev} + \beta_2\text{rxLev+5FU} + \beta_3\text{age} + \beta_4\text{sex}$$ 
+<br>
+Regarding the interaction term, a good explanation was given in the Stata forum in [this](https://www.statalist.org/forums/forum/general-stata-discussion/general/1431921-age-adjusted-rates-using-a-poisson-regression) post.  
+
+For anyone who wants to read more, I recommend the course material from the PhD course **Biostatistics III** at Karolinska Institutet, available [here](https://biostat3.net).  
+
+
+
+
+

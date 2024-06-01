@@ -3,11 +3,15 @@ project:
 
 website:
   title: "michaeldismorrmd.github.io"
+  site-url: https://michaeldismorrmd.github.io
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: about.qmd
+        text: About me
+      - href: blog_start.qmd
+        text: Blog
 
 format:
   html:

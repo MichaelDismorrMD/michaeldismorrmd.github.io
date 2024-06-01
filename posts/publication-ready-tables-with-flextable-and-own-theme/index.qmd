@@ -1,0 +1,239 @@
+---
+title: "Publication-ready tables with flextable and own theme in R"
+author: "Michael Dismorr"
+date: "2021-11-23"
+date-modified: "2024-06-01"
+categories: [R, publication-ready, tableone, flextable, tables]
+image: tableone.png
+---
+
+In this post, I will show you how to make publication-ready using a combination of the [`flextable`](https://cran.r-project.org/package=flextable) package and a function I've written to customize them according to my default layout. This will minimize the need to edit in MS Word, and copy and paste from Excel to Word when exporting tables from R. In this example, I will use the [`tableone`](https://cran.r-project.org/package=tableone) package to show how my `customtab()` function can be used to export Table 1.   
+
+The [`flextable`](https://cran.r-project.org/package=flextable) package is a great package to generate word tables from R output. Together with the [`officer`](https://cran.r-project.org/package=officer) package from the same creator, it allows you to make most of the customization needed immediately in R, and thus let's you skip this potentially annoying step in MS Word. The [`tableone`](https://cran.r-project.org/package=tableone) package is a great package for, you guessed it, generating Table 1s. It allows for p-value calculations, SMDs, and generally just the output that you need. 
+
+For demonstration, I will use the `gbsg` dataset from the from the [`survival`](https://cran.r-project.org/package=survival) package. If you just want to try out the `customtab()` function, it can be downloaded [here](customtab.R).  
+
+OK, let's begin!
+
+```{r message = FALSE}
+library(survival) # only needed for the dataset in this example
+library(dplyr) # to modify the needed dataframe
+library(tibble) # for rownames_to_column() function
+library(stringr) # for str_squish()
+library(flextable)
+library(officer)
+library(forcats)
+library(tableone)
+source("customtab.R")
+```
+
+Load the dataset:  
+
+```{r}
+breast <- survival::gbsg
+```
+
+Running `?survival::gbsg` gives:
+
+> The gbsg data set contains patient records from a 1984 — 1989 trial conducted by the German Breast Cancer Study Group (GBSG) of 720 patients with node positive cancer...  
+
+Variable | Explanation
+-------- | ------------
+pid   | Patiend ID
+age | Age in years
+meno | Menopausal staus - 0 = premenopaus, 1 = postmenopaus
+size | tumor size
+grade | tumor grade
+nodes | number of positive lymph nodes
+pgr | progesterone receptors (fmol/L)
+er | estrogen receptors (fmol/L)
+hormon | hormone therapy - 0 = no, 1 = yes
+rfstime | recurrence free survival time in days
+status | 0 = alive without recurrence, 1 = recurrence or death
+
+Select variables included in Table 1. 
+```{r}
+variables <- names(breast)
+
+breast <- breast %>% select(all_of(variables)) %>% 
+  select(-pid, -rfstime, -status)
+
+breast <- breast %>% mutate(meno = as_factor(meno), 
+                            grade = as_factor(grade), 
+                            hormon = as_factor(hormon))
+
+```
+
+Rename the variables as they should appear in the table. While `tableone` can add explanation for you, I genereally prefer to type them out myself to keep track of what I actually want to get (e.g. is it mean or median?)
+
+```{r}
+breast <- breast %>% rename(`Age, years (mean (SD))` = age, 
+                             Postmenopausal = meno, 
+                             `Tumor size, mm (mean (SD)` = size, 
+                             `Tumor grade` = grade, 
+                             `Positive lymph nodes, (n)` = nodes, 
+                             `Progesterone receptors, fmol/L (median [IQR])` = pgr, 
+                             `Estrogen receptors, fmol/L (median [IQR])` = er, 
+                             `Hormone treatment` = hormon)
+```
+
+Relabel hormon variable to more text friendly labels
+
+```{r}
+breast$`Hormone treatment` <- breast$`Hormone treatment` %>% 
+  fct_recode(Treated = "1", Placebo = "0")
+```
+
+Select all variables and specify categorical variables for `tableone`
+```{r}
+# All variables excluding the group variable
+myVars <- breast %>% select(-`Hormone treatment`) %>% names() 
+
+# All categorical variables
+catVars <-  breast %>% select(where(is.factor)) %>% 
+  dplyr::select(-`Hormone treatment`) %>% names()
+```
+
+Create Table 1 object
+```{r}
+tab1 <- breast %>% CreateTableOne(vars = myVars, 
+                   data = . , 
+                   factorVars = catVars, 
+                   strata = "Hormone treatment", 
+                   addOverall = T, 
+                   test = T)
+```
+
+Print Table 1 object to control output, e.g. remove missing, print non-normal variables correctly etc. 
+```{r}
+tab1_word <- print(tab1, 
+                   nonnormal = c("Progesterone receptors, fmol/L (median [IQR])", 
+                                 "Estrogen receptors, fmol/L (median [IQR])"),
+                   quote = F, 
+                   noSpaces = T, 
+                   # smd = T, 
+                   # missing = T, 
+                   test = F, 
+                   contDigits = 1, 
+                   printToggle = F,
+                   dropEqual = T, 
+                   explain = F)
+```
+
+`custom_tab()` needs a dataframe as argument, so first we convert the tableone object
+```{r}
+# Convert to dataframe
+tab1_df <- as.data.frame(tab1_word) %>% rownames_to_column(var = "Variable")
+```
+
+Use `custom_tab()` to export the MS Word table.  
+**Important:** run `customtab_defaults()` before using the `custom_tab()` function to get correct formatting 
+```{r}
+# Rename first variable from n to No.
+tab1_df$Variable[1] <- "No."
+
+# Set Table header
+header <- str_squish(str_remove("Table 1. Baseline characteristics of 686 
+                                patients enrolled in the German Breast Cancer Study Group 
+                                between 1984 and 1989", "\n"))
+
+# Set Table footer
+footer <- str_squish(str_remove("Numbers are No. (%) unless otherwise noted. 
+                                SD = standard deviation, fmol/L = femtomole per liter, 
+                                IQR = interquartile range", "\n"))
+
+# Set custom_tab() defaults
+customtab_defaults()
+
+# Create the flextable object
+flextable_1 <- custom_tab(tab1_df, header, footer)
+
+flextable_1
+
+```
+
+Save the resulting table as .docx
+```{r} 
+#| eval: false
+# Save as word .docx
+save_as_docx(flextable_1, path = "flextab_1.docx", 
+             pr_section = 
+               prop_section(page_size = page_size(orient = "portrait"), 
+                                       type = "continuous"))
+```
+
+
+This will generate the following MS Word Table: 
+
+![Custom Table](tableone.png)
+
+The `customtab_defaults()` function simply sets some defaults for your tables, and can be changed to match the requirements of the journal you will be submitting to
+
+```{r eval = FALSE}
+customtab_defaults <- function(){
+  set_flextable_defaults(font.family = "Calibri", 
+  font.size = 10, 
+  border.color = "black")
+}
+```
+
+The `custom_tab()` function looks like this
+
+```{r eval = FALSE}
+######### Create default BioAVR table from dataframe
+#
+# Dependencies : dplyr, flextable, officer
+#      
+custom_tab <- function(df, header, footer){
+  flextable(df) %>% 
+    add_header_lines(header) %>% 
+    add_footer_lines(footer) %>% 
+    bold(i = 1, part = "header") %>% 
+    hline_top(part = "header", 
+              border = fp_border(color = "red", 
+                                 width = 3, 
+                                 style = "solid")) %>% 
+    hline(i = 1, 
+          part = "header", 
+          border = fp_border(color = "black", 
+                             width = 0.25, 
+                             style = "solid")) %>% 
+    hline_top(part = "body", 
+              border = fp_border(color = "black", 
+                                 width = 0.25, 
+                                 style = "solid")) %>% 
+    hline_bottom(part = "body", 
+                 border = fp_border(color = "black", 
+                                    width = 0.25, 
+                                    style = "solid")) %>% 
+    hline_bottom(part = "footer", 
+                 border = fp_border(color = "black", 
+                                    width = 0.25, 
+                                    style = "solid")) %>% 
+    border_inner_h(part = "body", 
+                   border = fp_border(color = "black", 
+                                      width = 0.25, 
+                                      style = "dotted")) %>% 
+    autofit(part = "body") %>% 
+    bg(part = "body", bg = "#f5f5f5") %>% 
+    align(part = "all", align = "center") %>% 
+    align(j = 1, part = "all", align = "left")
+}
+
+```
+
+What it does is:  
+1. Add header and footer  
+2. Make header bold  
+3. Adds red and black border for header  
+4. Adds black borders for footer  
+5. Adds dotted borders for body content  
+6. Adds gray background to body  
+
+This is a standard design I go for in my tables, but it can of course be changed to your own or journal specific requirements. 
+While `flextable` allows output to other formats as well, I generally only use this for MS Word output. The reason is that I've noticed problems with the borders when outputting to pdf or image formats.  
+
+
+
+
+
