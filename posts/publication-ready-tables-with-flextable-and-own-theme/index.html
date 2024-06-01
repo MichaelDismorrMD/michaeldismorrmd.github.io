@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Dismorr">
+<meta name="dcterms.date" content="2021-11-23">
+
+<title>michaeldismorrmd.github.io - Publication-ready tables with flextable and own theme in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="../../site_libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+<script src="../../site_libs/tabwid-1.1.3/tabwid.js"></script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">michaeldismorrmd.github.io</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog_start.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Publication-ready tables with flextable and own theme in R</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">publication-ready</div>
+                <div class="quarto-category">tableone</div>
+                <div class="quarto-category">flextable</div>
+                <div class="quarto-category">tables</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Michael Dismorr </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 23, 2021</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">June 1, 2024</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>In this post, I will show you how to make publication-ready using a combination of the <a href="https://cran.r-project.org/package=flextable"><code>flextable</code></a> package and a function I’ve written to customize them according to my default layout. This will minimize the need to edit in MS Word, and copy and paste from Excel to Word when exporting tables from R. In this example, I will use the <a href="https://cran.r-project.org/package=tableone"><code>tableone</code></a> package to show how my <code>customtab()</code> function can be used to export Table 1.</p>
+<p>The <a href="https://cran.r-project.org/package=flextable"><code>flextable</code></a> package is a great package to generate word tables from R output. Together with the <a href="https://cran.r-project.org/package=officer"><code>officer</code></a> package from the same creator, it allows you to make most of the customization needed immediately in R, and thus let’s you skip this potentially annoying step in MS Word. The <a href="https://cran.r-project.org/package=tableone"><code>tableone</code></a> package is a great package for, you guessed it, generating Table 1s. It allows for p-value calculations, SMDs, and generally just the output that you need.</p>
+<p>For demonstration, I will use the <code>gbsg</code> dataset from the from the <a href="https://cran.r-project.org/package=survival"><code>survival</code></a> package. If you just want to try out the <code>customtab()</code> function, it can be downloaded <a href="customtab.R">here</a>.</p>
+<p>OK, let’s begin!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival) <span class="co"># only needed for the dataset in this example</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) <span class="co"># to modify the needed dataframe</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble) <span class="co"># for rownames_to_column() function</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr) <span class="co"># for str_squish()</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flextable)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(officer)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tableone)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"customtab.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Load the dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>breast <span class="ot">&lt;-</span> survival<span class="sc">::</span>gbsg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Running <code>?survival::gbsg</code> gives:</p>
+<blockquote class="blockquote">
+<p>The gbsg data set contains patient records from a 1984 — 1989 trial conducted by the German Breast Cancer Study Group (GBSG) of 720 patients with node positive cancer…</p>
+</blockquote>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>pid</td>
+<td>Patiend ID</td>
+</tr>
+<tr class="even">
+<td>age</td>
+<td>Age in years</td>
+</tr>
+<tr class="odd">
+<td>meno</td>
+<td>Menopausal staus - 0 = premenopaus, 1 = postmenopaus</td>
+</tr>
+<tr class="even">
+<td>size</td>
+<td>tumor size</td>
+</tr>
+<tr class="odd">
+<td>grade</td>
+<td>tumor grade</td>
+</tr>
+<tr class="even">
+<td>nodes</td>
+<td>number of positive lymph nodes</td>
+</tr>
+<tr class="odd">
+<td>pgr</td>
+<td>progesterone receptors (fmol/L)</td>
+</tr>
+<tr class="even">
+<td>er</td>
+<td>estrogen receptors (fmol/L)</td>
+</tr>
+<tr class="odd">
+<td>hormon</td>
+<td>hormone therapy - 0 = no, 1 = yes</td>
+</tr>
+<tr class="even">
+<td>rfstime</td>
+<td>recurrence free survival time in days</td>
+</tr>
+<tr class="odd">
+<td>status</td>
+<td>0 = alive without recurrence, 1 = recurrence or death</td>
+</tr>
+</tbody>
+</table>
+<p>Select variables included in Table 1.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>variables <span class="ot">&lt;-</span> <span class="fu">names</span>(breast)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>breast <span class="ot">&lt;-</span> breast <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">all_of</span>(variables)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>pid, <span class="sc">-</span>rfstime, <span class="sc">-</span>status)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>breast <span class="ot">&lt;-</span> breast <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">meno =</span> <span class="fu">as_factor</span>(meno), </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">grade =</span> <span class="fu">as_factor</span>(grade), </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">hormon =</span> <span class="fu">as_factor</span>(hormon))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Rename the variables as they should appear in the table. While <code>tableone</code> can add explanation for you, I genereally prefer to type them out myself to keep track of what I actually want to get (e.g.&nbsp;is it mean or median?)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>breast <span class="ot">&lt;-</span> breast <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="st">`</span><span class="at">Age, years (mean (SD))</span><span class="st">`</span> <span class="ot">=</span> age, </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">Postmenopausal =</span> meno, </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                             <span class="st">`</span><span class="at">Tumor size, mm (mean (SD)</span><span class="st">`</span> <span class="ot">=</span> size, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                             <span class="st">`</span><span class="at">Tumor grade</span><span class="st">`</span> <span class="ot">=</span> grade, </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                             <span class="st">`</span><span class="at">Positive lymph nodes, (n)</span><span class="st">`</span> <span class="ot">=</span> nodes, </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                             <span class="st">`</span><span class="at">Progesterone receptors, fmol/L (median [IQR])</span><span class="st">`</span> <span class="ot">=</span> pgr, </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                             <span class="st">`</span><span class="at">Estrogen receptors, fmol/L (median [IQR])</span><span class="st">`</span> <span class="ot">=</span> er, </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                             <span class="st">`</span><span class="at">Hormone treatment</span><span class="st">`</span> <span class="ot">=</span> hormon)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Relabel hormon variable to more text friendly labels</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>breast<span class="sc">$</span><span class="st">`</span><span class="at">Hormone treatment</span><span class="st">`</span> <span class="ot">&lt;-</span> breast<span class="sc">$</span><span class="st">`</span><span class="at">Hormone treatment</span><span class="st">`</span> <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fct_recode</span>(<span class="at">Treated =</span> <span class="st">"1"</span>, <span class="at">Placebo =</span> <span class="st">"0"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Select all variables and specify categorical variables for <code>tableone</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># All variables excluding the group variable</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>myVars <span class="ot">&lt;-</span> breast <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">Hormone treatment</span><span class="st">`</span>) <span class="sc">%&gt;%</span> <span class="fu">names</span>() </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># All categorical variables</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>catVars <span class="ot">&lt;-</span>  breast <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">where</span>(is.factor)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">Hormone treatment</span><span class="st">`</span>) <span class="sc">%&gt;%</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Create Table 1 object</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>tab1 <span class="ot">&lt;-</span> breast <span class="sc">%&gt;%</span> <span class="fu">CreateTableOne</span>(<span class="at">vars =</span> myVars, </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> . , </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">factorVars =</span> catVars, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">strata =</span> <span class="st">"Hormone treatment"</span>, </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">addOverall =</span> T, </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">test =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Print Table 1 object to control output, e.g.&nbsp;remove missing, print non-normal variables correctly etc.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tab1_word <span class="ot">&lt;-</span> <span class="fu">print</span>(tab1, </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">nonnormal =</span> <span class="fu">c</span>(<span class="st">"Progesterone receptors, fmol/L (median [IQR])"</span>, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"Estrogen receptors, fmol/L (median [IQR])"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">quote =</span> F, </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">noSpaces =</span> T, </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                   <span class="co"># smd = T, </span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                   <span class="co"># missing = T, </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">test =</span> F, </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">contDigits =</span> <span class="dv">1</span>, </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">printToggle =</span> F,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dropEqual =</span> T, </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">explain =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>custom_tab()</code> needs a dataframe as argument, so first we convert the tableone object</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to dataframe</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>tab1_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(tab1_word) <span class="sc">%&gt;%</span> <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">"Variable"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Use <code>custom_tab()</code> to export the MS Word table.<br>
+<strong>Important:</strong> run <code>customtab_defaults()</code> before using the <code>custom_tab()</code> function to get correct formatting</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rename first variable from n to No.</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>tab1_df<span class="sc">$</span>Variable[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"No."</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set Table header</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>header <span class="ot">&lt;-</span> <span class="fu">str_squish</span>(<span class="fu">str_remove</span>(<span class="st">"Table 1. Baseline characteristics of 686 </span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="st">                                patients enrolled in the German Breast Cancer Study Group </span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="st">                                between 1984 and 1989"</span>, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Set Table footer</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>footer <span class="ot">&lt;-</span> <span class="fu">str_squish</span>(<span class="fu">str_remove</span>(<span class="st">"Numbers are No. (%) unless otherwise noted. </span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="st">                                SD = standard deviation, fmol/L = femtomole per liter, </span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="st">                                IQR = interquartile range"</span>, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Set custom_tab() defaults</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">customtab_defaults</span>()</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the flextable object</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>flextable_1 <span class="ot">&lt;-</span> <span class="fu">custom_tab</span>(tab1_df, header, footer)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>flextable_1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div class="tabwid"><style>.cl-803a81f6{}.cl-8036d254{font-family:'Calibri';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8036d268{font-family:'Calibri';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-803838ce{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-803838ec{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-80384544{width:3.141in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 3pt solid rgba(255, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384545{width:1.289in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 3pt solid rgba(255, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384546{width:3.141in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0.25pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038454e{width:1.289in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0.25pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038454f{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384550{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384558{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384559{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038455a{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038455b{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384562{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384563{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384564{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038456c{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038456d{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384576{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384577{width:3.141in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384578{width:1.289in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-803a81f6"><thead><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-80384544"><p class="cl-803838ce"><span class="cl-8036d254">Table 1. Baseline characteristics of 686 patients enrolled in the German Breast Cancer Study Group between 1984 and 1989</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-80384546"><p class="cl-803838ce"><span class="cl-8036d268">Variable</span></p></th><th class="cl-8038454e"><p class="cl-803838ec"><span class="cl-8036d268">Overall</span></p></th><th class="cl-8038454e"><p class="cl-803838ec"><span class="cl-8036d268">Placebo</span></p></th><th class="cl-8038454e"><p class="cl-803838ec"><span class="cl-8036d268">Treated</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-8038454f"><p class="cl-803838ce"><span class="cl-8036d268">No.</span></p></td><td class="cl-80384550"><p class="cl-803838ec"><span class="cl-8036d268">686</span></p></td><td class="cl-80384550"><p class="cl-803838ec"><span class="cl-8036d268">440</span></p></td><td class="cl-80384550"><p class="cl-803838ec"><span class="cl-8036d268">246</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-80384558"><p class="cl-803838ce"><span class="cl-8036d268">Age, years (mean (SD))</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">53.1 (10.1)</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">51.1 (10.0)</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">56.6 (9.4)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8038455a"><p class="cl-803838ce"><span class="cl-8036d268">Postmenopausal</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">396 (57.7)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">209 (47.5)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">187 (76.0)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-80384562"><p class="cl-803838ce"><span class="cl-8036d268">Tumor size, mm (mean (SD)</span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268">29.3 (14.3)</span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268">29.6 (14.4)</span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268">28.8 (14.1)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-80384562"><p class="cl-803838ce"><span class="cl-8036d268">Tumor grade</span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268"></span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268"></span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8038455a"><p class="cl-803838ce"><span class="cl-8036d268">   1</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">81 (11.8)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">48 (10.9)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">33 (13.4)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8038455a"><p class="cl-803838ce"><span class="cl-8036d268">   2</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">444 (64.7)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">281 (63.9)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">163 (66.3)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8038455a"><p class="cl-803838ce"><span class="cl-8036d268">   3</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">161 (23.5)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">111 (25.2)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">50 (20.3)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-80384564"><p class="cl-803838ce"><span class="cl-8036d268">Positive lymph nodes, (n)</span></p></td><td class="cl-8038456c"><p class="cl-803838ec"><span class="cl-8036d268">5.0 (5.5)</span></p></td><td class="cl-8038456c"><p class="cl-803838ec"><span class="cl-8036d268">4.9 (5.6)</span></p></td><td class="cl-8038456c"><p class="cl-803838ec"><span class="cl-8036d268">5.1 (5.3)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-80384558"><p class="cl-803838ce"><span class="cl-8036d268">Progesterone receptors, fmol/L (median [IQR])</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">32.5 [7.0, 131.8]</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">32.0 [7.0, 130.0]</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">35.0 [7.2, 133.0]</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8038456d"><p class="cl-803838ce"><span class="cl-8036d268">Estrogen receptors, fmol/L (median [IQR])</span></p></td><td class="cl-80384576"><p class="cl-803838ec"><span class="cl-8036d268">36.0 [8.0, 114.0]</span></p></td><td class="cl-80384576"><p class="cl-803838ec"><span class="cl-8036d268">32.0 [8.0, 92.2]</span></p></td><td class="cl-80384576"><p class="cl-803838ec"><span class="cl-8036d268">46.0 [9.0, 182.5]</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-80384577"><p class="cl-803838ce"><span class="cl-8036d268">Numbers are No. (%) unless otherwise noted. SD = standard deviation, fmol/L = femtomole per liter, IQR = interquartile range</span></p></td></tr></tfoot></table></div>
+</div>
+</div>
+<p>Save the resulting table as .docx</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save as word .docx</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">save_as_docx</span>(flextable_1, <span class="at">path =</span> <span class="st">"flextab_1.docx"</span>, </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">pr_section =</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>               <span class="fu">prop_section</span>(<span class="at">page_size =</span> <span class="fu">page_size</span>(<span class="at">orient =</span> <span class="st">"portrait"</span>), </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">type =</span> <span class="st">"continuous"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This will generate the following MS Word Table:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="tableone.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Custom Table</figcaption>
+</figure>
+</div>
+<p>The <code>customtab_defaults()</code> function simply sets some defaults for your tables, and can be changed to match the requirements of the journal you will be submitting to</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>customtab_defaults <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Calibri"</span>, </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">font.size =</span> <span class="dv">10</span>, </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">border.color =</span> <span class="st">"black"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>custom_tab()</code> function looks like this</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">######### Create default BioAVR table from dataframe</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Dependencies : dplyr, flextable, officer</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      </span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>custom_tab <span class="ot">&lt;-</span> <span class="cf">function</span>(df, header, footer){</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">flextable</span>(df) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_header_lines</span>(header) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_footer_lines</span>(footer) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bold</span>(<span class="at">i =</span> <span class="dv">1</span>, <span class="at">part =</span> <span class="st">"header"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hline_top</span>(<span class="at">part =</span> <span class="st">"header"</span>, </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">border =</span> <span class="fu">fp_border</span>(<span class="at">color =</span> <span class="st">"red"</span>, </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">width =</span> <span class="dv">3</span>, </span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">style =</span> <span class="st">"solid"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hline</span>(<span class="at">i =</span> <span class="dv">1</span>, </span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>          <span class="at">part =</span> <span class="st">"header"</span>, </span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>          <span class="at">border =</span> <span class="fu">fp_border</span>(<span class="at">color =</span> <span class="st">"black"</span>, </span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>                             <span class="at">width =</span> <span class="fl">0.25</span>, </span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>                             <span class="at">style =</span> <span class="st">"solid"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hline_top</span>(<span class="at">part =</span> <span class="st">"body"</span>, </span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>              <span class="at">border =</span> <span class="fu">fp_border</span>(<span class="at">color =</span> <span class="st">"black"</span>, </span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">width =</span> <span class="fl">0.25</span>, </span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">style =</span> <span class="st">"solid"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hline_bottom</span>(<span class="at">part =</span> <span class="st">"body"</span>, </span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>                 <span class="at">border =</span> <span class="fu">fp_border</span>(<span class="at">color =</span> <span class="st">"black"</span>, </span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">width =</span> <span class="fl">0.25</span>, </span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">style =</span> <span class="st">"solid"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hline_bottom</span>(<span class="at">part =</span> <span class="st">"footer"</span>, </span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>                 <span class="at">border =</span> <span class="fu">fp_border</span>(<span class="at">color =</span> <span class="st">"black"</span>, </span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">width =</span> <span class="fl">0.25</span>, </span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">style =</span> <span class="st">"solid"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">border_inner_h</span>(<span class="at">part =</span> <span class="st">"body"</span>, </span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>                   <span class="at">border =</span> <span class="fu">fp_border</span>(<span class="at">color =</span> <span class="st">"black"</span>, </span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">width =</span> <span class="fl">0.25</span>, </span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">style =</span> <span class="st">"dotted"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">autofit</span>(<span class="at">part =</span> <span class="st">"body"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bg</span>(<span class="at">part =</span> <span class="st">"body"</span>, <span class="at">bg =</span> <span class="st">"#f5f5f5"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">align</span>(<span class="at">part =</span> <span class="st">"all"</span>, <span class="at">align =</span> <span class="st">"center"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">align</span>(<span class="at">j =</span> <span class="dv">1</span>, <span class="at">part =</span> <span class="st">"all"</span>, <span class="at">align =</span> <span class="st">"left"</span>)</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>What it does is:<br>
+1. Add header and footer<br>
+2. Make header bold<br>
+3. Adds red and black border for header<br>
+4. Adds black borders for footer<br>
+5. Adds dotted borders for body content<br>
+6. Adds gray background to body</p>
+<p>This is a standard design I go for in my tables, but it can of course be changed to your own or journal specific requirements. While <code>flextable</code> allows output to other formats as well, I generally only use this for MS Word output. The reason is that I’ve noticed problems with the borders when outputting to pdf or image formats.</p>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
