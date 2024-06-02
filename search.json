@@ -7,6 +7,17 @@
     "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n\n\n\n\n\n\n\n\n\n\nPublication-ready tables with flextable and own theme in R\n\n\n\n\n\n\nR\n\n\npublication-ready\n\n\ntableone\n\n\nflextable\n\n\ntables\n\n\n\n\n\n\n\n\n\nNov 23, 2021\n\n\nMichael Dismorr\n\n\n\n\n\n\n\n\n\n\n\n\nAge-, and sex-adjusted incidence rates\n\n\n\n\n\n\nR\n\n\nincidence-rate\n\n\npoisson-regression\n\n\nsurvival-analysis\n\n\n\n\n\n\n\n\n\nNov 15, 2021\n\n\nMichael Dismorr\n\n\n\n\n\n\nNo matching items"
   },
   {
+    "objectID": "setup_guide/setup_5.html",
+    "href": "setup_guide/setup_5.html",
+    "title": "Installing R",
+    "section": "",
+    "text": "Now, it’s time to install R.\nGo to https://cran.r-project.org and click on “Download R for macOS”.\nNow, select the correct downloader depending on if you had an Intel or Apple Silicon Mac as described here.\n\n\n\nSelect the correct downloader\n\n\nWhen the .pkg file has finished downloading, double-click it to start the installation. When finished, you can move the .pkg installer to the trash.",
+    "crumbs": [
+      "Setup guide",
+      "Installing R"
+    ]
+  },
+  {
     "objectID": "setup_guide/setup_2.html",
     "href": "setup_guide/setup_2.html",
     "title": "Intel or Apple Silicon",
@@ -92,6 +103,17 @@
     "crumbs": [
       "Setup guide",
       "Installing Homebrew"
+    ]
+  },
+  {
+    "objectID": "setup_guide/setup_6.html",
+    "href": "setup_guide/setup_6.html",
+    "title": "Installing RStudio",
+    "section": "",
+    "text": "Now, it’s finally time to install RStudio. Go to https://posit.co, and click on “Download Rstudio”. Don’t click the button that says “Download Rstudio Server”, but use the regular desktop version.\nSince you have already installed R, go ahead and click on “Download Rstudio Desktop for macOS 12+”\n\n\n\nInstall RStudio\n\n\nDrag the RStudio icon into your Applications folder. Once the installation finishes, eject the .dmg file and move it to the trash.\nThen open RStudio either by double clicking on the RStudio icon in the Applications folder, or using spotlight by pressing Command+SpaceCommand+Space and typing rstudio.\n\n\n\n\n\n\nNote\n\n\n\nIf you don’t use spotlight often, the first time you use it, it might take some time to find the applications you’re looking for. This will be much faster the next time you use it, and definitely faster than clicking your way through finder to your Applications folder.\n\n\n\n\n\nOpening RStudio through spotlight\n\n\nThis marks the end of this Setup guide. In the following section, we will go through a suggested workflow when starting a new project.",
+    "crumbs": [
+      "Setup guide",
+      "Installing RStudio"
     ]
   },
   {

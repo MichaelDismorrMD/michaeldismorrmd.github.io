@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>michaeldismorrmd.github.io - Installing gh-cli</title>
+<title>michaeldismorrmd.github.io - Installing R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../setup_guide/setup_5.html" rel="next">
-<link href="../setup_guide/setup_3.html" rel="prev">
+<link href="../setup_guide/setup_6.html" rel="next">
+<link href="../setup_guide/setup_4.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -41,8 +41,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script src="../site_libs/quarto-contrib/kbd/kbd.js"></script>
-<link href="../site_libs/quarto-contrib/kbd/kbd.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -133,7 +131,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../setup_guide/setup_4.html">Installing gh-cli</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../setup_guide/setup_5.html">Installing R</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -165,13 +163,13 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../setup_guide/setup_4.html" class="sidebar-item-text sidebar-link active">
+  <a href="../setup_guide/setup_4.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Installing gh-cli</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../setup_guide/setup_5.html" class="sidebar-item-text sidebar-link">
+  <a href="../setup_guide/setup_5.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Installing R</span></a>
   </div>
 </li>
@@ -194,7 +192,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Installing gh-cli</h1>
+<h1 class="title">Installing R</h1>
 </div>
 
 
@@ -211,22 +209,16 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Now, we will use <code>brew</code> to install the github command-line program, <a href="https://cli.github.com/manual/"><code>gh-cli</code></a>. This command line program will allow you to login, sync, and clone the repositories you have access to on GitHub.</p>
-<p>Type <code>brew install gh</code> in your terminal and press <kbd aria-hidden="true">Enter</kbd><span class="visually-hidden">Enter</span>.</p>
+<p>Now, it’s time to install R.</p>
+<p>Go to <a href="https://cran.r-project.org" class="uri">https://cran.r-project.org</a> and click on “Download R for macOS”.</p>
+<p>Now, select the correct downloader depending on if you had an Intel or Apple Silicon Mac as described <a href="../setup_guide/setup_2.html">here</a>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="install_gh.png" class="img-fluid figure-img" size="60%"></p>
-<figcaption>Installing gh with brew</figcaption>
+<p><img src="r_version.png" class="img-fluid figure-img"></p>
+<figcaption>Select the correct downloader</figcaption>
 </figure>
 </div>
-<p>When the command finishes, type <code>gh auth login</code> in the terminal. This will log you in to your github account. Chose GitHub, HTTPS, Yes to authenticate git, and login via browser.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="gh_login.png" class="img-fluid figure-img"></p>
-<figcaption>gh login</figcaption>
-</figure>
-</div>
-<p>To confirm that your login worked, type in <code>gh auth status</code> and press <kbd aria-hidden="true">Enter</kbd><span class="visually-hidden">Enter</span>.</p>
+<p>When the .pkg file has finished downloading, double-click it to start the installation. When finished, you can move the .pkg installer to the trash.</p>
 
 
 
@@ -642,13 +634,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../setup_guide/setup_3.html" class="pagination-link" aria-label="Installing Homebrew">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Installing Homebrew</span>
+      <a href="../setup_guide/setup_4.html" class="pagination-link" aria-label="Installing gh-cli">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Installing gh-cli</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../setup_guide/setup_5.html" class="pagination-link" aria-label="Installing R">
-        <span class="nav-page-text">Installing R</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../setup_guide/setup_6.html" class="pagination-link" aria-label="Installing RStudio">
+        <span class="nav-page-text">Installing RStudio</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -657,4 +649,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/edit/main/setup_guide/setup_4.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/edit/main/setup_guide/setup_5.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

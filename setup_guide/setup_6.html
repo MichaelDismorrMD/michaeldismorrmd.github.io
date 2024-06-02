@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>michaeldismorrmd.github.io - Installing gh-cli</title>
+<title>michaeldismorrmd.github.io - Installing RStudio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../setup_guide/setup_5.html" rel="next">
-<link href="../setup_guide/setup_3.html" rel="prev">
+<link href="../setup_guide/setup_5.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -133,7 +132,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../setup_guide/setup_4.html">Installing gh-cli</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../setup_guide/setup_6.html">Installing RStudio</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -165,7 +164,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../setup_guide/setup_4.html" class="sidebar-item-text sidebar-link active">
+  <a href="../setup_guide/setup_4.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Installing gh-cli</span></a>
   </div>
 </li>
@@ -177,7 +176,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../setup_guide/setup_6.html" class="sidebar-item-text sidebar-link">
+  <a href="../setup_guide/setup_6.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Installing RStudio</span></a>
   </div>
 </li>
@@ -194,7 +193,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Installing gh-cli</h1>
+<h1 class="title">Installing RStudio</h1>
 </div>
 
 
@@ -211,22 +210,36 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Now, we will use <code>brew</code> to install the github command-line program, <a href="https://cli.github.com/manual/"><code>gh-cli</code></a>. This command line program will allow you to login, sync, and clone the repositories you have access to on GitHub.</p>
-<p>Type <code>brew install gh</code> in your terminal and press <kbd aria-hidden="true">Enter</kbd><span class="visually-hidden">Enter</span>.</p>
+<p>Now, it’s finally time to install RStudio. Go to <a href="https://posit.co" class="uri">https://posit.co</a>, and click on “Download Rstudio”. Don’t click the button that says “Download Rstudio Server”, but use the regular desktop version.</p>
+<p>Since you have already installed R, go ahead and click on “Download Rstudio Desktop for macOS 12+”</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="install_gh.png" class="img-fluid figure-img" size="60%"></p>
-<figcaption>Installing gh with brew</figcaption>
+<p><img src="install_rstudio.png" class="img-fluid figure-img"></p>
+<figcaption>Install RStudio</figcaption>
 </figure>
 </div>
-<p>When the command finishes, type <code>gh auth login</code> in the terminal. This will log you in to your github account. Chose GitHub, HTTPS, Yes to authenticate git, and login via browser.</p>
+<p>Drag the RStudio icon into your Applications folder. Once the installation finishes, eject the .dmg file and move it to the trash.</p>
+<p>Then open RStudio either by double clicking on the RStudio icon in the Applications folder, or using spotlight by pressing <kbd aria-hidden="true">Command+Space</kbd><span class="visually-hidden">Command+Space</span> and typing <code>rstudio</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you don’t use spotlight often, the first time you use it, it might take some time to find the applications you’re looking for. This will be much faster the next time you use it, and definitely faster than clicking your way through finder to your Applications folder.</p>
+</div>
+</div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gh_login.png" class="img-fluid figure-img"></p>
-<figcaption>gh login</figcaption>
+<p><img src="rstudio_spotlight.png" class="img-fluid figure-img"></p>
+<figcaption>Opening RStudio through spotlight</figcaption>
 </figure>
 </div>
-<p>To confirm that your login worked, type in <code>gh auth status</code> and press <kbd aria-hidden="true">Enter</kbd><span class="visually-hidden">Enter</span>.</p>
+<p>This marks the end of this Setup guide. In the following section, we will go through a suggested workflow when starting a new project.</p>
 
 
 
@@ -642,14 +655,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../setup_guide/setup_3.html" class="pagination-link" aria-label="Installing Homebrew">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Installing Homebrew</span>
+      <a href="../setup_guide/setup_5.html" class="pagination-link" aria-label="Installing R">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Installing R</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../setup_guide/setup_5.html" class="pagination-link" aria-label="Installing R">
-        <span class="nav-page-text">Installing R</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
@@ -657,4 +667,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/edit/main/setup_guide/setup_4.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/edit/main/setup_guide/setup_6.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
