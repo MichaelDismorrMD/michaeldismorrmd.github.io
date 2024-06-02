@@ -1,6 +1,5 @@
 ---
 title: "Installing gh-cli"
-author: "Michael Dismorr"
 ---
 
 Now, we will use `brew` to install the github command-line program, [`gh-cli`](https://cli.github.com/manual/).

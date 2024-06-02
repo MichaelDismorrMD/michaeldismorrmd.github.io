@@ -1,0 +1,25 @@
+---
+title: "Installing RStudio"
+---
+
+Now, it's finally time to install RStudio. 
+Go to <https://posit.co>, and click on "Download Rstudio". 
+Don't click the button that says "Download Rstudio Server", but use the regular desktop version.
+
+Since you have already installed R, go ahead and click on "Download Rstudio Desktop for macOS 12+"
+
+![Install RStudio](install_rstudio.png)
+
+Drag the RStudio icon into your Applications folder. Once the installation finishes, eject the .dmg file and move it to the trash. 
+
+Then open RStudio either by double clicking on the RStudio icon in the Applications folder, or using spotlight by pressing {{< kbd Command+Space >}} and typing `rstudio`. 
+
+::: {.callout-tip}
+## Note
+If you don't use spotlight often, the first time you use it, it might take some time to find the applications you're looking for.
+This will be much faster the next time you use it, and definitely faster than clicking your way through finder to your Applications folder. 
+:::
+
+![Opening RStudio through spotlight](rstudio_spotlight.png)
+
+This marks the end of this Setup guide. In the following section, we will go through a suggested workflow when starting a new project.

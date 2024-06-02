@@ -36,6 +36,8 @@ website:
         - setup_guide/setup_2.qmd
         - setup_guide/setup_3.qmd
         - setup_guide/setup_4.qmd
+        - setup_guide/setup_5.qmd
+        - setup_guide/setup_6.qmd
 
 format:
   html:

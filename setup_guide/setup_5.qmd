@@ -1,0 +1,14 @@
+---
+title: "Installing R"
+---
+
+Now, it's time to install R. 
+
+Go to <https://cran.r-project.org> and click on "Download R for macOS".  
+
+Now, select the correct downloader depending on if you had an Intel or Apple Silicon Mac as described [here](setup_2.qmd). 
+
+![Select the correct downloader](r_version.png)
+
+When the .pkg file has finished downloading, double-click it to start the installation. 
+When finished, you can move the .pkg installer to the trash. 
