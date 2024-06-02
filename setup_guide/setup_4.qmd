@@ -1,0 +1,20 @@
+---
+title: "Installing gh-cli"
+author: "Michael Dismorr"
+---
+
+Now, we will use `brew` to install the github command-line program, [`gh-cli`](https://cli.github.com/manual/).
+This command line program will allow you to login, sync, and clone the repositories you have access to on GitHub. 
+
+Type `brew install gh` in your terminal and press {{< kbd Enter >}}. 
+
+
+![Installing gh with brew](install_gh.png){size=60%}
+
+
+When the command finishes, type `gh auth login` in the terminal. 
+This will log you in to your github account. Chose GitHub, HTTPS, Yes to authenticate git, and login via browser.
+
+![gh login](gh_login.png)
+
+To confirm that your login worked, type in `gh auth status` and press {{< kbd Enter >}}.

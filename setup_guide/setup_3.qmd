@@ -1,0 +1,34 @@
+---
+title: "Installing Homebrew"
+---
+
+Now it's time to install [Homebrew](https://brew.sh). 
+Homebrew is a packet manager, and you can use it as a command in your terminal to install other programs needed for development, including other commands.  
+
+First, go to the Homebrew webpage on <https://brew.sh>.
+Then, click on the clipboard icon to the left where I have marked the image "Click here"
+
+![Homebrew webpage](brew_webpage.png)
+
+Then, open you terminal. This program can be found in your Applications folder, but it is often faster to use Spotlight
+by pressing {{< kbd Command+Space >}} and then typing `terminal`. Then select the Terminal application and press {{< kbd Enter >}}.  
+
+![Spotlight](spotlight_terminal.png){width=60%}
+
+Now, paste in the command you copied from the Homebrew webpage by pressing {{< kbd Command+V >}} and then press {{< kbd Enter >}}.  
+You might be promted to enter your computer password, do this and then press {{< kbd Enter >}}. 
+
+::: {.callout-warning}
+## Beware
+You will not see that you are entering anything in the terminal, that's the default look when entering sensitive information such as passwords. 
+Don't try and enter it again, as it will be entered two times. 
+:::
+
+![Terminal](terminal.png){width=60%}
+
+If no errors were encountered, you have now successfully installed the `brew` command. 
+
+
+
+
+ 

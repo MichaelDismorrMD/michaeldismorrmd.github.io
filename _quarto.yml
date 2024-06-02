@@ -17,8 +17,25 @@ website:
         text: About me
       - href: blog_start.qmd
         text: Blog
-      - href: https://michaeldismorrmd.github.io/setup_book/
+      - href: setup_guide/setup_1.qmd
         text: Setup guide
+    tools:
+      - icon: github
+        menu:
+          - text: Source Code
+            href:  https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io
+          - text: Report a Bug
+            href:  https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new
+            
+  sidebar:
+    - title: "Setup guide"
+      style: "docked"
+      background: light
+      contents:
+        - setup_guide/setup_1.qmd
+        - setup_guide/setup_2.qmd
+        - setup_guide/setup_3.qmd
+        - setup_guide/setup_4.qmd
 
 format:
   html:

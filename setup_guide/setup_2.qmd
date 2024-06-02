@@ -1,0 +1,16 @@
+---
+title: "Intel or Apple Silicon"
+---
+
+# "Intel or Apple Silicon"
+
+Before we move on, you need to determine if your Mac uses Intel or Apple Silicon.
+
+To do this, click on the  symbol in the upper left corner of the screen, and then click "About this Mac".
+
+![Apple menu](apple_menu.png)
+
+![About this Mac](about_this_mac.png){width=40%}
+
+You have an Apple Silicon Mac if the first line says M1, M2 or M3.  
+You have an Intel Mac if it says something with Intel.

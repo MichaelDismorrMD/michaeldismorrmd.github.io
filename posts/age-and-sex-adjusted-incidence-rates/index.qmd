@@ -4,6 +4,7 @@ author: "Michael Dismorr"
 date: "2021-11-15"
 date-modified: "2024-06-01"
 categories: [R, incidence-rate, poisson-regression, survival-analysis]
+image: image.png
 ---
 
 In this first post I'm going to present a way of obtaining age- and sex-adjusted incidence rates using poisson regression in R. This will be similar to what is done in Stata as described [here](https://www.statalist.org/forums/forum/general-stata-discussion/general/1431921-age-adjusted-rates-using-a-poisson-regression).

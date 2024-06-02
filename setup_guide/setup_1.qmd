@@ -1,0 +1,26 @@
+---
+title: "Setup guide"
+---
+
+This guide is intended to help new members of our research group get their environments up and running, 
+or old members who need to get new hardware up and running. 
+
+In it's current form, it's assumed you're using a Mac computer.
+The guide will assume you are very new to computer concepts such as running terminal commands, and I will try to be as clear as possible. 
+
+**Before starting, you must:**
+
+1. Register an account at [GitHub](https://github.com)
+2. Know, or be able to access your GitHub and computer password
+
+
+**This guide will guide you through the following steps:**
+
+* Determine if you use an Intel or Apple silicon Mac
+* Installing Homebrew
+* Installing `gh-cli`
+* Installing R, and chosing the correct version according to if you have Intel or Apple Silicon
+* Installing RStudio
+
+
+
