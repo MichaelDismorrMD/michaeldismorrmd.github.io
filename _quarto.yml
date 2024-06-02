@@ -4,6 +4,11 @@ project:
 website:
   title: "michaeldismorrmd.github.io"
   site-url: https://michaeldismorrmd.github.io
+  repo-url: https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io
+  repo-actions: [edit, issue]
+  search: 
+    location: navbar
+    type: overlay
   navbar:
     left:
       - href: index.qmd
@@ -12,6 +17,8 @@ website:
         text: About me
       - href: blog_start.qmd
         text: Blog
+      - href: https://michaeldismorrmd.github.io/setup_book/
+        text: Setup guide
 
 format:
   html:

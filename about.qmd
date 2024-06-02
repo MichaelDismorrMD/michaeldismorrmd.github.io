@@ -5,18 +5,18 @@ about:
   image: assets/avatar.jpg
   image-shape: round
   links:
-    - icon: twitter
-      text: twitter
-      href: https://twitter.com
+    - icon: twitter-x
+      text: X
+      href: https://x.com/MichaelDismorr
     - icon: github
-      text: Github
+      text: GitHub
       href: https://github.com
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/michaeldismorr
 ---
 
-## About
+## About me
 
 I am a M.D., PhD and postdoctoral researcher at Karolinska Institutet in the cardiothoracic surgery research group. 
 
