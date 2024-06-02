@@ -1,0 +1,1431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>michaeldismorrmd.github.io</title>
+<link>https://michaeldismorrmd.github.io/blog_start.html</link>
+<atom:link href="https://michaeldismorrmd.github.io/blog_start.xml" rel="self" type="application/rss+xml"/>
+<description></description>
+<generator>quarto-1.4.553</generator>
+<lastBuildDate>Mon, 22 Nov 2021 21:00:00 GMT</lastBuildDate>
+<item>
+  <title>Publication-ready tables with flextable and own theme in R</title>
+  <dc:creator>Michael Dismorr</dc:creator>
+  <link>https://michaeldismorrmd.github.io/posts/publication-ready-tables-with-flextable-and-own-theme/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>In this post, I will show you how to make publication-ready using a combination of the <a href="https://cran.r-project.org/package=flextable"><code>flextable</code></a> package and a function I’ve written to customize them according to my default layout. This will minimize the need to edit in MS Word, and copy and paste from Excel to Word when exporting tables from R. In this example, I will use the <a href="https://cran.r-project.org/package=tableone"><code>tableone</code></a> package to show how my <code>customtab()</code> function can be used to export Table 1.</p>
+<p>The <a href="https://cran.r-project.org/package=flextable"><code>flextable</code></a> package is a great package to generate word tables from R output. Together with the <a href="https://cran.r-project.org/package=officer"><code>officer</code></a> package from the same creator, it allows you to make most of the customization needed immediately in R, and thus let’s you skip this potentially annoying step in MS Word. The <a href="https://cran.r-project.org/package=tableone"><code>tableone</code></a> package is a great package for, you guessed it, generating Table 1s. It allows for p-value calculations, SMDs, and generally just the output that you need.</p>
+<p>For demonstration, I will use the <code>gbsg</code> dataset from the from the <a href="https://cran.r-project.org/package=survival"><code>survival</code></a> package. If you just want to try out the <code>customtab()</code> function, it can be downloaded <a href="customtab.R">here</a>.</p>
+<p>OK, let’s begin!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(survival) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># only needed for the dataset in this example</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(dplyr) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># to modify the needed dataframe</span></span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tibble) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># for rownames_to_column() function</span></span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(stringr) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># for str_squish()</span></span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(flextable)</span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(officer)</span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(forcats)</span>
+<span id="cb1-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tableone)</span>
+<span id="cb1-9"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"customtab.R"</span>)</span></code></pre></div>
+</div>
+<p>Load the dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">breast <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> survival<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span>gbsg</span></code></pre></div>
+</div>
+<p>Running <code>?survival::gbsg</code> gives:</p>
+<blockquote class="blockquote">
+<p>The gbsg data set contains patient records from a 1984 — 1989 trial conducted by the German Breast Cancer Study Group (GBSG) of 720 patients with node positive cancer…</p>
+</blockquote>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>pid</td>
+<td>Patiend ID</td>
+</tr>
+<tr class="even">
+<td>age</td>
+<td>Age in years</td>
+</tr>
+<tr class="odd">
+<td>meno</td>
+<td>Menopausal staus - 0 = premenopaus, 1 = postmenopaus</td>
+</tr>
+<tr class="even">
+<td>size</td>
+<td>tumor size</td>
+</tr>
+<tr class="odd">
+<td>grade</td>
+<td>tumor grade</td>
+</tr>
+<tr class="even">
+<td>nodes</td>
+<td>number of positive lymph nodes</td>
+</tr>
+<tr class="odd">
+<td>pgr</td>
+<td>progesterone receptors (fmol/L)</td>
+</tr>
+<tr class="even">
+<td>er</td>
+<td>estrogen receptors (fmol/L)</td>
+</tr>
+<tr class="odd">
+<td>hormon</td>
+<td>hormone therapy - 0 = no, 1 = yes</td>
+</tr>
+<tr class="even">
+<td>rfstime</td>
+<td>recurrence free survival time in days</td>
+</tr>
+<tr class="odd">
+<td>status</td>
+<td>0 = alive without recurrence, 1 = recurrence or death</td>
+</tr>
+</tbody>
+</table>
+<p>Select variables included in Table 1.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">variables <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>(breast)</span>
+<span id="cb3-2"></span>
+<span id="cb3-3">breast <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> breast <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">all_of</span>(variables)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb3-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>pid, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>rfstime, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>status)</span>
+<span id="cb3-5"></span>
+<span id="cb3-6">breast <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> breast <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">meno =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as_factor</span>(meno), </span>
+<span id="cb3-7">                            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">grade =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as_factor</span>(grade), </span>
+<span id="cb3-8">                            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hormon =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as_factor</span>(hormon))</span></code></pre></div>
+</div>
+<p>Rename the variables as they should appear in the table. While <code>tableone</code> can add explanation for you, I genereally prefer to type them out myself to keep track of what I actually want to get (e.g.&nbsp;is it mean or median?)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">breast <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> breast <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rename</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Age, years (mean (SD))</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> age, </span>
+<span id="cb4-2">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Postmenopausal =</span> meno, </span>
+<span id="cb4-3">                             <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Tumor size, mm (mean (SD)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> size, </span>
+<span id="cb4-4">                             <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Tumor grade</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> grade, </span>
+<span id="cb4-5">                             <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Positive lymph nodes, (n)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> nodes, </span>
+<span id="cb4-6">                             <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Progesterone receptors, fmol/L (median [IQR])</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> pgr, </span>
+<span id="cb4-7">                             <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Estrogen receptors, fmol/L (median [IQR])</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> er, </span>
+<span id="cb4-8">                             <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Hormone treatment</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> hormon)</span></code></pre></div>
+</div>
+<p>Relabel hormon variable to more text friendly labels</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">breast<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Hormone treatment</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> breast<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Hormone treatment</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fct_recode</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Treated =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"1"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Placebo =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"0"</span>)</span></code></pre></div>
+</div>
+<p>Select all variables and specify categorical variables for <code>tableone</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># All variables excluding the group variable</span></span>
+<span id="cb6-2">myVars <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> breast <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Hormone treatment</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>() </span>
+<span id="cb6-3"></span>
+<span id="cb6-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># All categorical variables</span></span>
+<span id="cb6-5">catVars <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span>  breast <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">where</span>(is.factor)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb6-6">  dplyr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Hormone treatment</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>()</span></code></pre></div>
+</div>
+<p>Create Table 1 object</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">tab1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> breast <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">CreateTableOne</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">vars =</span> myVars, </span>
+<span id="cb7-2">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> . , </span>
+<span id="cb7-3">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">factorVars =</span> catVars, </span>
+<span id="cb7-4">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">strata =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Hormone treatment"</span>, </span>
+<span id="cb7-5">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">addOverall =</span> T, </span>
+<span id="cb7-6">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">test =</span> T)</span></code></pre></div>
+</div>
+<p>Print Table 1 object to control output, e.g.&nbsp;remove missing, print non-normal variables correctly etc.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">tab1_word <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">print</span>(tab1, </span>
+<span id="cb8-2">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nonnormal =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Progesterone receptors, fmol/L (median [IQR])"</span>, </span>
+<span id="cb8-3">                                 <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Estrogen receptors, fmol/L (median [IQR])"</span>),</span>
+<span id="cb8-4">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">quote =</span> F, </span>
+<span id="cb8-5">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">noSpaces =</span> T, </span>
+<span id="cb8-6">                   <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># smd = T, </span></span>
+<span id="cb8-7">                   <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># missing = T, </span></span>
+<span id="cb8-8">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">test =</span> F, </span>
+<span id="cb8-9">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">contDigits =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, </span>
+<span id="cb8-10">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">printToggle =</span> F,</span>
+<span id="cb8-11">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">dropEqual =</span> T, </span>
+<span id="cb8-12">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">explain =</span> F)</span></code></pre></div>
+</div>
+<p><code>custom_tab()</code> needs a dataframe as argument, so first we convert the tableone object</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Convert to dataframe</span></span>
+<span id="cb9-2">tab1_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.data.frame</span>(tab1_word) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rownames_to_column</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">var =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Variable"</span>)</span></code></pre></div>
+</div>
+<p>Use <code>custom_tab()</code> to export the MS Word table.<br>
+<strong>Important:</strong> run <code>customtab_defaults()</code> before using the <code>custom_tab()</code> function to get correct formatting</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Rename first variable from n to No.</span></span>
+<span id="cb10-2">tab1_df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Variable[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"No."</span></span>
+<span id="cb10-3"></span>
+<span id="cb10-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set Table header</span></span>
+<span id="cb10-5">header <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_squish</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_remove</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Table 1. Baseline characteristics of 686 </span></span>
+<span id="cb10-6"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">                                patients enrolled in the German Breast Cancer Study Group </span></span>
+<span id="cb10-7"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">                                between 1984 and 1989"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">\n</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>))</span>
+<span id="cb10-8"></span>
+<span id="cb10-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set Table footer</span></span>
+<span id="cb10-10">footer <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_squish</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_remove</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Numbers are No. (%) unless otherwise noted. </span></span>
+<span id="cb10-11"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">                                SD = standard deviation, fmol/L = femtomole per liter, </span></span>
+<span id="cb10-12"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">                                IQR = interquartile range"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">\n</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>))</span>
+<span id="cb10-13"></span>
+<span id="cb10-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set custom_tab() defaults</span></span>
+<span id="cb10-15"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">customtab_defaults</span>()</span>
+<span id="cb10-16"></span>
+<span id="cb10-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create the flextable object</span></span>
+<span id="cb10-18">flextable_1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">custom_tab</span>(tab1_df, header, footer)</span>
+<span id="cb10-19"></span>
+<span id="cb10-20">flextable_1</span></code></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-803a81f6{}.cl-8036d254{font-family:'Calibri';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8036d268{font-family:'Calibri';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-803838ce{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-803838ec{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-80384544{width:3.141in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 3pt solid rgba(255, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384545{width:1.289in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 3pt solid rgba(255, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384546{width:3.141in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0.25pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038454e{width:1.289in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0.25pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038454f{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384550{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384558{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384559{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038455a{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038455b{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384562{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384563{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384564{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038456c{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt dotted rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8038456d{width:3.141in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384576{width:1.289in;background-color:rgba(245, 245, 245, 1.00);vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0.25pt dotted rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384577{width:3.141in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-80384578{width:1.289in;background-color:transparent;vertical-align: middle;border-bottom: 0.25pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-803a81f6"><thead><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-80384544"><p class="cl-803838ce"><span class="cl-8036d254">Table 1. Baseline characteristics of 686 patients enrolled in the German Breast Cancer Study Group between 1984 and 1989</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-80384546"><p class="cl-803838ce"><span class="cl-8036d268">Variable</span></p></th><th class="cl-8038454e"><p class="cl-803838ec"><span class="cl-8036d268">Overall</span></p></th><th class="cl-8038454e"><p class="cl-803838ec"><span class="cl-8036d268">Placebo</span></p></th><th class="cl-8038454e"><p class="cl-803838ec"><span class="cl-8036d268">Treated</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-8038454f"><p class="cl-803838ce"><span class="cl-8036d268">No.</span></p></td><td class="cl-80384550"><p class="cl-803838ec"><span class="cl-8036d268">686</span></p></td><td class="cl-80384550"><p class="cl-803838ec"><span class="cl-8036d268">440</span></p></td><td class="cl-80384550"><p class="cl-803838ec"><span class="cl-8036d268">246</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-80384558"><p class="cl-803838ce"><span class="cl-8036d268">Age, years (mean (SD))</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">53.1 (10.1)</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">51.1 (10.0)</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">56.6 (9.4)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8038455a"><p class="cl-803838ce"><span class="cl-8036d268">Postmenopausal</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">396 (57.7)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">209 (47.5)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">187 (76.0)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-80384562"><p class="cl-803838ce"><span class="cl-8036d268">Tumor size, mm (mean (SD)</span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268">29.3 (14.3)</span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268">29.6 (14.4)</span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268">28.8 (14.1)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-80384562"><p class="cl-803838ce"><span class="cl-8036d268">Tumor grade</span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268"></span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268"></span></p></td><td class="cl-80384563"><p class="cl-803838ec"><span class="cl-8036d268"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8038455a"><p class="cl-803838ce"><span class="cl-8036d268">   1</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">81 (11.8)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">48 (10.9)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">33 (13.4)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8038455a"><p class="cl-803838ce"><span class="cl-8036d268">   2</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">444 (64.7)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">281 (63.9)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">163 (66.3)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8038455a"><p class="cl-803838ce"><span class="cl-8036d268">   3</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">161 (23.5)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">111 (25.2)</span></p></td><td class="cl-8038455b"><p class="cl-803838ec"><span class="cl-8036d268">50 (20.3)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-80384564"><p class="cl-803838ce"><span class="cl-8036d268">Positive lymph nodes, (n)</span></p></td><td class="cl-8038456c"><p class="cl-803838ec"><span class="cl-8036d268">5.0 (5.5)</span></p></td><td class="cl-8038456c"><p class="cl-803838ec"><span class="cl-8036d268">4.9 (5.6)</span></p></td><td class="cl-8038456c"><p class="cl-803838ec"><span class="cl-8036d268">5.1 (5.3)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-80384558"><p class="cl-803838ce"><span class="cl-8036d268">Progesterone receptors, fmol/L (median [IQR])</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">32.5 [7.0, 131.8]</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">32.0 [7.0, 130.0]</span></p></td><td class="cl-80384559"><p class="cl-803838ec"><span class="cl-8036d268">35.0 [7.2, 133.0]</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8038456d"><p class="cl-803838ce"><span class="cl-8036d268">Estrogen receptors, fmol/L (median [IQR])</span></p></td><td class="cl-80384576"><p class="cl-803838ec"><span class="cl-8036d268">36.0 [8.0, 114.0]</span></p></td><td class="cl-80384576"><p class="cl-803838ec"><span class="cl-8036d268">32.0 [8.0, 92.2]</span></p></td><td class="cl-80384576"><p class="cl-803838ec"><span class="cl-8036d268">46.0 [9.0, 182.5]</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-80384577"><p class="cl-803838ce"><span class="cl-8036d268">Numbers are No. (%) unless otherwise noted. SD = standard deviation, fmol/L = femtomole per liter, IQR = interquartile range</span></p></td></tr></tfoot></table></div>
+</div>
+</div>
+<p>Save the resulting table as .docx</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Save as word .docx</span></span>
+<span id="cb11-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">save_as_docx</span>(flextable_1, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">path =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"flextab_1.docx"</span>, </span>
+<span id="cb11-3">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pr_section =</span> </span>
+<span id="cb11-4">               <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">prop_section</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">page_size =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">page_size</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">orient =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"portrait"</span>), </span>
+<span id="cb11-5">                                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"continuous"</span>))</span></code></pre></div>
+</div>
+<p>This will generate the following MS Word Table:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://michaeldismorrmd.github.io/posts/publication-ready-tables-with-flextable-and-own-theme/tableone.png" class="img-fluid figure-img"></p>
+<figcaption>Custom Table</figcaption>
+</figure>
+</div>
+<p>The <code>customtab_defaults()</code> function simply sets some defaults for your tables, and can be changed to match the requirements of the journal you will be submitting to</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">customtab_defaults <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(){</span>
+<span id="cb12-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set_flextable_defaults</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">font.family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Calibri"</span>, </span>
+<span id="cb12-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">font.size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, </span>
+<span id="cb12-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">border.color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>)</span>
+<span id="cb12-5">}</span></code></pre></div>
+</div>
+<p>The <code>custom_tab()</code> function looks like this</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><span class="do" style="color: #5E5E5E;
+background-color: null;
+font-style: italic;">######### Create default BioAVR table from dataframe</span></span>
+<span id="cb13-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#</span></span>
+<span id="cb13-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Dependencies : dplyr, flextable, officer</span></span>
+<span id="cb13-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#      </span></span>
+<span id="cb13-5">custom_tab <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(df, header, footer){</span>
+<span id="cb13-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">flextable</span>(df) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-7">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">add_header_lines</span>(header) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-8">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">add_footer_lines</span>(footer) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-9">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bold</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"header"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-10">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hline_top</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"header"</span>, </span>
+<span id="cb13-11">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">border =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fp_border</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span>, </span>
+<span id="cb13-12">                                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, </span>
+<span id="cb13-13">                                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">style =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"solid"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-14">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, </span>
+<span id="cb13-15">          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"header"</span>, </span>
+<span id="cb13-16">          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">border =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fp_border</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, </span>
+<span id="cb13-17">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>, </span>
+<span id="cb13-18">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">style =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"solid"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-19">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hline_top</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"body"</span>, </span>
+<span id="cb13-20">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">border =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fp_border</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, </span>
+<span id="cb13-21">                                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>, </span>
+<span id="cb13-22">                                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">style =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"solid"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-23">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hline_bottom</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"body"</span>, </span>
+<span id="cb13-24">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">border =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fp_border</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, </span>
+<span id="cb13-25">                                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>, </span>
+<span id="cb13-26">                                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">style =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"solid"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-27">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hline_bottom</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"footer"</span>, </span>
+<span id="cb13-28">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">border =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fp_border</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, </span>
+<span id="cb13-29">                                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>, </span>
+<span id="cb13-30">                                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">style =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"solid"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-31">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">border_inner_h</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"body"</span>, </span>
+<span id="cb13-32">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">border =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fp_border</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, </span>
+<span id="cb13-33">                                      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>, </span>
+<span id="cb13-34">                                      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">style =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dotted"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-35">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">autofit</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"body"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-36">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bg</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"body"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bg =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#f5f5f5"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-37">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">align</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"all"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">align =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"center"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-38">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">align</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">j =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">part =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"all"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">align =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"left"</span>)</span>
+<span id="cb13-39">}</span></code></pre></div>
+</div>
+<p>What it does is:<br>
+1. Add header and footer<br>
+2. Make header bold<br>
+3. Adds red and black border for header<br>
+4. Adds black borders for footer<br>
+5. Adds dotted borders for body content<br>
+6. Adds gray background to body</p>
+<p>This is a standard design I go for in my tables, but it can of course be changed to your own or journal specific requirements. While <code>flextable</code> allows output to other formats as well, I generally only use this for MS Word output. The reason is that I’ve noticed problems with the borders when outputting to pdf or image formats.</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>publication-ready</category>
+  <category>tableone</category>
+  <category>flextable</category>
+  <category>tables</category>
+  <guid>https://michaeldismorrmd.github.io/posts/publication-ready-tables-with-flextable-and-own-theme/</guid>
+  <pubDate>Mon, 22 Nov 2021 21:00:00 GMT</pubDate>
+  <media:content url="https://michaeldismorrmd.github.io/posts/publication-ready-tables-with-flextable-and-own-theme/tableone.png" medium="image" type="image/png" height="98" width="144"/>
+</item>
+<item>
+  <title>Age-, and sex-adjusted incidence rates</title>
+  <dc:creator>Michael Dismorr</dc:creator>
+  <link>https://michaeldismorrmd.github.io/posts/age-and-sex-adjusted-incidence-rates/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>In this first post I’m going to present a way of obtaining age- and sex-adjusted incidence rates using poisson regression in R. This will be similar to what is done in Stata as described <a href="https://www.statalist.org/forums/forum/general-stata-discussion/general/1431921-age-adjusted-rates-using-a-poisson-regression">here</a>.</p>
+<p>I’ve written a R function that’s available for download <a href="age_sex_adjust.R">here.</a> The script can be sourced ( <code>source("age_sex_adjust.R")</code> ) and then the function <code>age_sex_adjust()</code> can be used as is. Note that the time variable will have to be in days, and the incidence will be presented as per 100 person-years. The code will also be described step by step below.</p>
+<hr>
+<p>There are, as usual, several ways to calculate adjusted incidence rates in R. I’ve chosen to use the package <a href="https://marginaleffects.com">marginaleffects</a> by <a href="https://x.com/vincentab">Vincent Arel-Bundock,</a> Noah Greifer and Andrew Heiss because it has a lot of nice features and useful implications in causal inference. Specifically, we will use the function <code>avg_predictions()</code> from <code>marginaleffects</code> to generate the the adjusted incidence rates.</p>
+<p>But first we start off with a little bit of background on what an incidence rate is. It is simply a measure of a number of occurrences (a count) in a population over the total population time. For example, in a population of 10 people, each followed 1 year, there was one case of death. In that population, the incidence rate of death would 1 per 10 person-years. In observational data, we often have larger cohorts with varying follow-up time and censoring. The calculation is of course the same, using the formula below:<br>
+<br> <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BIncidence%20rate%7D%20=%20%5Cfrac%7B%5Ctext%7BNumber%20of%20occurrences%7D%7D%7B%5Csum_%7B%5Ctext%7BPersons%7D%7D%7B%5Ctext%7BTime%20in%20study%7D%7D%7D"> <br></p>
+<hr>
+<section id="calculating-crude-incidence-rate" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-crude-incidence-rate">Calculating crude incidence rate</h3>
+<p>To illustrate, we will now use the <code>colon</code> dataset from the <code>survival</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(survival)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(dplyr)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(broom)</span></code></pre></div>
+</div>
+<p>Running <code>?survival::colon</code> tells us the following:</p>
+<blockquote class="blockquote">
+<p>Data from one of the first successful trials of adjuvant chemotherapy for colon cancer</p>
+</blockquote>
+<table class="table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>Patient id</td>
+</tr>
+<tr class="even">
+<td>study</td>
+<td>1 for all patients</td>
+</tr>
+<tr class="odd">
+<td>rx</td>
+<td>1 for all patients</td>
+</tr>
+<tr class="even">
+<td>sex</td>
+<td>1 = male</td>
+</tr>
+<tr class="odd">
+<td>age</td>
+<td>in years</td>
+</tr>
+<tr class="even">
+<td>obstruct</td>
+<td>colon obstruction by tumour</td>
+</tr>
+<tr class="odd">
+<td>perfor</td>
+<td>performation of colon</td>
+</tr>
+<tr class="even">
+<td>adhere</td>
+<td>adherence to nearby organs</td>
+</tr>
+<tr class="odd">
+<td>nodes</td>
+<td>number of positive lymph nodes</td>
+</tr>
+<tr class="even">
+<td>time</td>
+<td>days until event or censoring</td>
+</tr>
+<tr class="odd">
+<td>status</td>
+<td>censoring status</td>
+</tr>
+<tr class="even">
+<td>differ</td>
+<td>tumour differentiation — 1 = well, 2 = moderate, 3 = poor</td>
+</tr>
+<tr class="odd">
+<td>extent</td>
+<td>extent of local spread — 1 = submucosa, 2 = muscle, 3 = serosa, 4 = continious</td>
+</tr>
+<tr class="even">
+<td>surg</td>
+<td>time from surgery to registration — 0 = short, 1 = long</td>
+</tr>
+<tr class="odd">
+<td>node4</td>
+<td>more than 4 positive lymph nodes</td>
+</tr>
+<tr class="even">
+<td>etype</td>
+<td>event type — 1 = recurrence, 2 = death</td>
+</tr>
+</tbody>
+</table>
+<p>OK, so now that we understand the data, let’s start calculating crude incidence rates for death among the different treatment groups:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Using the colon dataset from the survival package</span></span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Only keep records related to the death outcome</span></span>
+<span id="cb2-4">colon_death <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> survival<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span>colon <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> dplyr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(etype <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) </span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Time is divided by 365.25/100 to get the time in days </span></span>
+<span id="cb2-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># first to years, then to 100 person-years</span></span>
+<span id="cb2-8"></span>
+<span id="cb2-9">colon_death <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span>(rx) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb2-10">                <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summarise</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Events =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(status), </span>
+<span id="cb2-11">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Time =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(time<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365.25</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>), </span>
+<span id="cb2-12">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Rate =</span> Events <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> Time, </span>
+<span id="cb2-13">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lower =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">poisson.test</span>(Events, Time)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>conf.int[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], </span>
+<span id="cb2-14">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">upper =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">poisson.test</span>(Events, Time)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>conf.int[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>])</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  rx      Events  Time  Rate lower upper
+  &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Obs        168  13.8 12.2  10.4  14.2 
+2 Lev        161  13.7 11.7  10.0  13.7 
+3 Lev+5FU    123  15.0  8.22  6.83  9.80</code></pre>
+</div>
+</div>
+<p>Now we compare to the calculated rates with rates obtained from the <code>survRate()</code> function from the <a href="https://cran.r-project.org/package=biostat3">biostat3</a> package:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(biostat3)</span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">survRate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Surv</span>(time<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365.25</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, status) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> rx, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> colon_death) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb4-3">  dplyr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(rx, event, tstop, rate, lower, upper) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb4-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as_tibble</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb4-5">  dplyr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rename</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Events =</span> event, </span>
+<span id="cb4-6">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Time =</span> tstop, </span>
+<span id="cb4-7">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Rate =</span> rate)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  rx      Events  Time  Rate lower upper
+  &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Obs        168  13.8 12.2  10.4  14.2 
+2 Lev        161  13.7 11.7  10.0  13.7 
+3 Lev+5FU    123  15.0  8.22  6.83  9.80</code></pre>
+</div>
+</div>
+<p>Good, the incidence rates are identical. The observational patients had an mortality incidence rate of 12.2 per 100 person-years, compared to the Lev+5-FU treated patients with an incidence rate of 8.22 per 100 person-years. Now, let’s try and repeat these results with poisson regression.</p>
+</section>
+<section id="obtaining-estimated-incidence-rates-using-poisson-regression" class="level3">
+<h3 class="anchored" data-anchor-id="obtaining-estimated-incidence-rates-using-poisson-regression">Obtaining estimated incidence rates using poisson regression</h3>
+<p>Here we use the <a href="https://broom.tidymodels.org/">broom</a> package <code>tidy()</code> function to obtain exponentiated estimates:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Fit the model to estimate IRR using offset</span></span>
+<span id="cb6-2">poisson_fit <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glm</span>(status <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> rx <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">offset</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(time<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365.25</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)), </span>
+<span id="cb6-3">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> poisson, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> colon_death)</span>
+<span id="cb6-4"></span>
+<span id="cb6-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Exponentiate the estimate to obtain IRR</span></span>
+<span id="cb6-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tidy</span>(poisson_fit, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">exponentiate =</span> T, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">conf.int =</span> T)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 7
+  term        estimate std.error statistic   p.value conf.low conf.high
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)   12.2      0.0772    32.4   3.13e-230   10.4      14.1  
+2 rxLev          0.965    0.110     -0.324 7.46e-  1    0.777     1.20 
+3 rxLev+5FU      0.675    0.119     -3.32  9.16e-  4    0.534     0.850</code></pre>
+</div>
+</div>
+<p>The Intercept estimate here is the estimated IR for the reference level, i.e.&nbsp;the Obs group.</p>
+<p>To get estimated IR of Lev+5FU treated:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">lev_5fu <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(poisson_fit, </span>
+<span id="cb8-2">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">newdata =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">rx =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Lev+5FU"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">time =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">36525</span>), </span>
+<span id="cb8-3">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"link"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">se.fit =</span> T)</span>
+<span id="cb8-4"></span>
+<span id="cb8-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as_tibble</span>(lev_5fu) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summarise</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Treatment =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Lev+5FU"</span>, </span>
+<span id="cb8-6">                                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">IR =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(fit), </span>
+<span id="cb8-7">                                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lower =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(fit <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.96</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> se.fit)), </span>
+<span id="cb8-8">                                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">upper =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(fit <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.96</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> se.fit)))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  Treatment    IR lower upper
+  &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Lev+5FU    8.22  6.88  9.80</code></pre>
+</div>
+</div>
+<p>Here, the confidence interval needs to be calculated on the <img src="https://latex.codecogs.com/png.latex?%5Clog"> scale and then exponentiated back. This will cause the confidence interval to not be centered around the estimate.</p>
+<p>A poisson model can model <img src="https://latex.codecogs.com/png.latex?%5Clog%5Ctext%7Bincidence%20rates%20(ratios)%7D"> when we use the time variable as an offset. Therefore, we can include covariates in the model to be accounted for, such as age and sex.</p>
+</section>
+<section id="age--and-sex-adjusted-incidence-rates-using-poisson-regression" class="level3">
+<h3 class="anchored" data-anchor-id="age--and-sex-adjusted-incidence-rates-using-poisson-regression">Age- and sex-adjusted incidence rates using poisson regression</h3>
+<p>First, we’ll do it using my <code>age_sex_adjust()</code> function</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"age_sex_adjust.R"</span>)</span>
+<span id="cb10-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Usage: age_sex_adjust(data, group, age, sex, event, time)</span></span>
+<span id="cb10-3"></span>
+<span id="cb10-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">age_sex_adjust</span>(colon_death, rx, age, sex, status, time)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Treatment        IR  Lower_CI  Upper_CI
+1   Lev+5FU  8.245483  6.786784  9.704182
+2       Obs 12.211861 10.362612 14.061109
+3       Lev 11.819634  9.990691 13.648577</code></pre>
+</div>
+</div>
+<p>Here we see that the adjusted rates are very similar to the crude rates calculated above. Since this data comes from a randomized trial, this is expected and can be taken as a sign that the randomization worked.</p>
+<p>Now, let’s do the some thing but without using the ready made function to see how it works under the hood.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(marginaleffects)</span>
+<span id="cb12-2"></span>
+<span id="cb12-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Fit the model using offset to estimate IRR</span></span>
+<span id="cb12-4">poisson_fit <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glm</span>(status <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> rx <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">I</span>(age<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> sex <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">offset</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.numeric</span>(time))), </span>
+<span id="cb12-5">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> colon_death, </span>
+<span id="cb12-6">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> poisson)</span>
+<span id="cb12-7"></span>
+<span id="cb12-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a new dataset where time is converted to 36525 days (100 years)</span></span>
+<span id="cb12-9">newdat <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> colon_death <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">time =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">36525</span>) </span>
+<span id="cb12-10"></span>
+<span id="cb12-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Use avg_predictions to estimate what the incidence rate would have been if </span></span>
+<span id="cb12-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># the entire population would have been treated according to each level of rx</span></span>
+<span id="cb12-13">result <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">avg_predictions</span>(poisson_fit, </span>
+<span id="cb12-14">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">variables =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rx"</span>, </span>
+<span id="cb12-15">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">newdata =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">transform</span>(colon_death, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">time =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">36525</span>), </span>
+<span id="cb12-16">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"response"</span>)</span>
+<span id="cb12-17"></span>
+<span id="cb12-18">result <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> dplyr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(rx, estimate, conf.low, conf.high)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Estimate CI low CI high
+     8.25   6.79     9.7
+    12.21  10.36    14.1
+    11.82   9.99    13.6
+
+Columns: rx, estimate, conf.low, conf.high </code></pre>
+</div>
+</div>
+<p>The numbers are identical to the ones obtained from the <code>age_sex_adjust()</code> function, which is logical since we did the same thing as the function does.<br>
+A few finishing notes. Here I included age as a quadratic term, and as an interaction with exposure. These are modeling decisions one will have to take, however the model could have been only a main effects model such as:<br>
+<br> <img src="https://latex.codecogs.com/png.latex?%5Clog%5Clambda%20=%20%5Cbeta_0%20+%20%5Cbeta_1%5Ctext%7BrxLev%7D%20+%20%5Cbeta_2%5Ctext%7BrxLev+5FU%7D%20+%20%5Cbeta_3%5Ctext%7Bage%7D%20+%20%5Cbeta_4%5Ctext%7Bsex%7D"> <br> Regarding the interaction term, a good explanation was given in the Stata forum in <a href="https://www.statalist.org/forums/forum/general-stata-discussion/general/1431921-age-adjusted-rates-using-a-poisson-regression">this</a> post.</p>
+<p>For anyone who wants to read more, I recommend the course material from the PhD course <strong>Biostatistics III</strong> at Karolinska Institutet, available <a href="https://biostat3.net">here</a>.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>incidence-rate</category>
+  <category>poisson-regression</category>
+  <category>survival-analysis</category>
+  <guid>https://michaeldismorrmd.github.io/posts/age-and-sex-adjusted-incidence-rates/</guid>
+  <pubDate>Sun, 14 Nov 2021 21:00:00 GMT</pubDate>
+  <media:content url="https://michaeldismorrmd.github.io/posts/age-and-sex-adjusted-incidence-rates/image.png" medium="image" type="image/png" height="42" width="144"/>
+</item>
+</channel>
+</rss>
