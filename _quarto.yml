@@ -17,8 +17,8 @@ website:
         text: About me
       - href: blog_start.qmd
         text: Blog
-      - href: setup_guide/setup_1.qmd
-        text: Setup guide
+      - href: guides/guide.qmd
+        text: Guides
     tools:
       - icon: github
         menu:
@@ -31,13 +31,15 @@ website:
     - title: "Setup guide"
       style: "docked"
       background: light
-      contents:
-        - setup_guide/setup_1.qmd
-        - setup_guide/setup_2.qmd
-        - setup_guide/setup_3.qmd
-        - setup_guide/setup_4.qmd
-        - setup_guide/setup_5.qmd
-        - setup_guide/setup_6.qmd
+      contents: 
+        section: "Setup Guide"
+        contents: 
+          - guides/setup_1.qmd
+          - guides/setup_2.qmd
+          - guides/setup_3.qmd
+          - guides/setup_4.qmd
+          - guides/setup_5.qmd
+          - guides/setup_6.qmd
 
 format:
   html:
