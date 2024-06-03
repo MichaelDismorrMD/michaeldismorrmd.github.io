@@ -1,0 +1,11 @@
+---
+title: "Guides"
+---
+
+Here are section with guides. They are aimed more at members and students at our research group, and as such does not fit in in the blog section. However, they might still be of help to others who face similar problems. 
+
+The first section is intended to aid in setting up the necessary software to work with R efficiently. 
+
+The second section showcases a workflow I prefer when starting new projects. 
+
+More sections might follow

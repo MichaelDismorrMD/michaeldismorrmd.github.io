@@ -1,0 +1,54 @@
+---
+title: "Installing gh-cli"
+---
+
+Now, we will use `brew` to install the github command-line program, [`gh-cli`](https://cli.github.com/manual/).
+This command line program will allow you to login, sync, and clone the repositories you have access to on GitHub. 
+
+Type `brew install gh` in your terminal and press {{< kbd Enter >}}. 
+
+
+![Installing gh with brew](install_gh.png){size=60%}
+
+
+When the command finishes, type `gh auth login` in the terminal. 
+This will log you in to your github account. Chose GitHub, HTTPS, Yes to authenticate git, and login via browser.
+
+![gh login](gh_login.png)
+
+To confirm that your login worked, type in `gh auth status` and press {{< kbd Enter >}}.
+
+Now we will create an alias, or our own defined command to use with gh. 
+Typen in the following in the terminal:
+
+```{.bash}
+gh alias set repo-names '!gh api user/repos --paginate | jq ".[] | .full_name"'
+```
+
+In order for this alias to work, we need to install the `jq` command using `brew`:
+
+```{.bash}
+brew install jq
+```
+
+When you run `gh repo-names`, it will show you a list of your GitHub repositories, as well as those you have been invited to collaborate on. 
+This differs from the `gh repo list` command which will only show you your own repos. 
+We will get back to this at a later guide. 
+
+We will also take some time to set up your `git` command if you have not used it before. 
+Run the following commands (and replace `Firstname` and `Lastname` with your actual names, and `example@email.com` with your actual email that you use for GitHub):
+
+```{.bash filename="Set default editor"}
+git config --global core.editor "nano -w"
+```
+
+```{.bash filename="Set your name"}
+git config --global user.name "Firstname Lastname"
+```
+
+```{.bash filename="Set your email"}
+git config --global user.email "example@email.com"
+```
+
+
+

@@ -12,12 +12,10 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Home
-      - href: about.qmd
         text: About me
       - href: blog_start.qmd
         text: Blog
-      - href: guides/guide.qmd
+      - href: guides/guides.qmd
         text: Guides
     tools:
       - icon: github
@@ -28,18 +26,21 @@ website:
             href:  https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new
             
   sidebar:
-    - title: "Setup guide"
+    - title: Guides
       style: "docked"
       background: light
       contents: 
-        section: "Setup Guide"
-        contents: 
-          - guides/setup_1.qmd
-          - guides/setup_2.qmd
-          - guides/setup_3.qmd
-          - guides/setup_4.qmd
-          - guides/setup_5.qmd
-          - guides/setup_6.qmd
+        - section: Guides
+          contents: 
+            - guides/guides.qmd
+        - section: "Setup Guide"
+          contents: 
+            - guides/setup/setup_1.qmd
+            - guides/setup/setup_2.qmd
+            - guides/setup/setup_3.qmd
+            - guides/setup/setup_4.qmd
+            - guides/setup/setup_5.qmd
+            - guides/setup/setup_6.qmd
 
 format:
   html:
