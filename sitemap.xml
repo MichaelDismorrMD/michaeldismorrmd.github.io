@@ -2,46 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://michaeldismorrmd.github.io/blog_start.html</loc>
-    <lastmod>2024-06-02T05:49:19.369Z</lastmod>
+    <lastmod>2024-06-03T06:21:11.252Z</lastmod>
   </url>
   <url>
-    <loc>https://michaeldismorrmd.github.io/setup_guide/setup_5.html</loc>
-    <lastmod>2024-06-02T13:39:59.412Z</lastmod>
+    <loc>https://michaeldismorrmd.github.io/guides/setup/guides.html</loc>
+    <lastmod>2024-06-03T06:21:11.260Z</lastmod>
   </url>
   <url>
-    <loc>https://michaeldismorrmd.github.io/setup_guide/setup_2.html</loc>
-    <lastmod>2024-06-02T12:58:32.582Z</lastmod>
+    <loc>https://michaeldismorrmd.github.io/guides/setup/setup_5.html</loc>
+    <lastmod>2024-06-03T06:21:11.265Z</lastmod>
   </url>
   <url>
-    <loc>https://michaeldismorrmd.github.io/setup_guide/setup_1.html</loc>
-    <lastmod>2024-06-02T13:12:01.258Z</lastmod>
+    <loc>https://michaeldismorrmd.github.io/guides/setup/setup_2.html</loc>
+    <lastmod>2024-06-03T06:21:11.265Z</lastmod>
   </url>
   <url>
-    <loc>https://michaeldismorrmd.github.io/index.html</loc>
-    <lastmod>2024-05-31T15:58:57.611Z</lastmod>
-  </url>
-  <url>
-    <loc>https://michaeldismorrmd.github.io/posts/age-and-sex-adjusted-incidence-rates/index.html</loc>
-    <lastmod>2024-06-02T07:55:21.554Z</lastmod>
+    <loc>https://michaeldismorrmd.github.io/guides/setup/setup_1.html</loc>
+    <lastmod>2024-06-03T06:21:11.265Z</lastmod>
   </url>
   <url>
     <loc>https://michaeldismorrmd.github.io/posts/publication-ready-tables-with-flextable-and-own-theme/index.html</loc>
-    <lastmod>2024-06-01T08:46:50.608Z</lastmod>
+    <lastmod>2024-06-03T06:21:11.271Z</lastmod>
   </url>
   <url>
-    <loc>https://michaeldismorrmd.github.io/about.html</loc>
-    <lastmod>2024-06-02T07:40:31.289Z</lastmod>
+    <loc>https://michaeldismorrmd.github.io/posts/age-and-sex-adjusted-incidence-rates/index.html</loc>
+    <lastmod>2024-06-03T06:21:11.270Z</lastmod>
   </url>
   <url>
-    <loc>https://michaeldismorrmd.github.io/setup_guide/setup_3.html</loc>
-    <lastmod>2024-06-02T14:50:06.185Z</lastmod>
+    <loc>https://michaeldismorrmd.github.io/index.html</loc>
+    <lastmod>2024-06-03T10:30:16.458Z</lastmod>
   </url>
   <url>
-    <loc>https://michaeldismorrmd.github.io/setup_guide/setup_6.html</loc>
-    <lastmod>2024-06-02T14:53:12.316Z</lastmod>
+    <loc>https://michaeldismorrmd.github.io/guides/setup/setup_3.html</loc>
+    <lastmod>2024-06-03T06:21:11.265Z</lastmod>
   </url>
   <url>
-    <loc>https://michaeldismorrmd.github.io/setup_guide/setup_4.html</loc>
-    <lastmod>2024-06-02T13:35:47.487Z</lastmod>
+    <loc>https://michaeldismorrmd.github.io/guides/setup/setup_6.html</loc>
+    <lastmod>2024-06-03T06:21:11.265Z</lastmod>
+  </url>
+  <url>
+    <loc>https://michaeldismorrmd.github.io/guides/setup/setup_4.html</loc>
+    <lastmod>2024-06-03T09:22:58.990Z</lastmod>
+  </url>
+  <url>
+    <loc>https://michaeldismorrmd.github.io/guides/guides.html</loc>
+    <lastmod>2024-06-03T06:58:18.900Z</lastmod>
   </url>
 </urlset>
