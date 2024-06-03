@@ -123,7 +123,7 @@ tab1_word <- print(tab1,
 `custom_tab()` needs a dataframe as argument, so first we convert the tableone object
 ```{r}
 # Convert to dataframe
-tab1_df <- as.data.frame(tab1_word) %>% rownames_to_column(var = "Variable")
+tab1_df <- tab1_word %>% as_tibble(rownames = "Variable")
 ```
 
 Use `custom_tab()` to export the MS Word table.  
