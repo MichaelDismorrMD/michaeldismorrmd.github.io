@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>michaeldismorrmd.github.io - New project workflow</title>
+<title>michaeldismorrmd.github.io - Clone project using gh-cli</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,8 +64,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../guides/new_project/new_project_2.html" rel="next">
-<link href="../../guides/setup/setup_6.html" rel="prev">
+<link href="../../guides/collaborate/collaborate_2.html" rel="next">
+<link href="../../guides/new_project/new_project_2.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -41,6 +75,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/kbd/kbd.js"></script>
+<link href="../../site_libs/quarto-contrib/kbd/kbd.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -127,7 +163,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../guides/new_project/new_project_1.html">New project</a></li><li class="breadcrumb-item"><a href="../../guides/new_project/new_project_1.html">New project workflow</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../guides/collaborate/collaborate_1.html">Collaborate</a></li><li class="breadcrumb-item"><a href="../../guides/collaborate/collaborate_1.html">Clone project using gh-cli</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -214,7 +250,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../guides/new_project/new_project_1.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../guides/new_project/new_project_1.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">New project workflow</span></a>
   </div>
 </li>
@@ -237,7 +273,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../guides/collaborate/collaborate_1.html" class="sidebar-item-text sidebar-link">
+  <a href="../../guides/collaborate/collaborate_1.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clone project using gh-cli</span></a>
   </div>
 </li>
@@ -266,9 +302,9 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../guides/new_project/new_project_1.html">New project</a></li><li class="breadcrumb-item"><a href="../../guides/new_project/new_project_1.html">New project workflow</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../guides/collaborate/collaborate_1.html">Collaborate</a></li><li class="breadcrumb-item"><a href="../../guides/collaborate/collaborate_1.html">Clone project using gh-cli</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">New project workflow</h1>
+<h1 class="title">Clone project using gh-cli</h1>
 </div>
 
 
@@ -285,17 +321,28 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This guide will cover a suggested workflow for when you want to start working on a new project.<br>
-Specifically, it will cover:</p>
-<ul>
-<li>Using the <code>usethis</code> package</li>
-<li>Creating a new R-project</li>
-<li>Using it with git</li>
-<li>Pushing it to a remote repositry using github</li>
-<li>Using <code>renv</code> to keep track of the packages used in the project</li>
-<li>Suggesting a simple git workflow for collaborating on your project</li>
-</ul>
-<p>Let’s get started!</p>
+<p>This section will guide you through how to set up when you’ve been invited to collaborate on a new project. As I mentioned in the previous section, I like to keep a folder structure to keep track of the repo owner, that is, who created and likely leads the project. If I have invited you to collaborate, you should make sure you have a folder like this <code>~/my_git/Michael</code>.</p>
+<p>First, open your terminal using spotlight by pressing <kbd aria-hidden="true">Command+Space</kbd><span class="visually-hidden">Command+Space</span> and type in terminal.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="spotlight_terminal.png" class="img-fluid figure-img"></p>
+<figcaption>Open terminal using spotlight</figcaption>
+</figure>
+</div>
+<p>Type <code>ls</code> to confirm the <code>my_git</code> folder exists. If it does type <code>cd my_git</code> to go into it, otherwise first type <code>mkdir my_git</code> to create it. Once in the <code>my_git</code> folder, type <code>ls</code> again to see if the <code>Michael</code> folder exists, otherwise create it using <code>mkdir</code> and go into it using <code>cd</code>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="terminal_my_git.png" class="img-fluid figure-img"></p>
+<figcaption>Going into the my_git folder</figcaption>
+</figure>
+</div>
+<p>Now, we are going to clone to repository to our computer. If you already know the GitHub name and repo name that you have been invited to, you can type:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo clone Username/repo_name</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>I often find myself not knowing either the username nor the repo name, so I list all repos I have access to using the <code>repo-name</code> alias we set up in the <a href="../../guides/setup/setup_4.html">Setup Guide</a>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo-names</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Once it has finished cloning, go into the <code>repo_name</code> folder and then open RStudio.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> repo-name</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">open</span> repo-name.RProj</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 
@@ -711,13 +758,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../guides/setup/setup_6.html" class="pagination-link" aria-label="Installing RStudio">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Installing RStudio</span>
+      <a href="../../guides/new_project/new_project_2.html" class="pagination-link" aria-label="Using the usethis package">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Using the usethis package</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../guides/new_project/new_project_2.html" class="pagination-link" aria-label="Using the usethis package">
-        <span class="nav-page-text">Using the usethis package</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../guides/collaborate/collaborate_2.html" class="pagination-link" aria-label="Syncing dependencies using renv">
+        <span class="nav-page-text">Syncing dependencies using renv</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -726,4 +773,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/edit/main/guides/new_project/new_project_1.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/edit/main/guides/collaborate/collaborate_1.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
