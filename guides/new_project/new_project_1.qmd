@@ -1,0 +1,16 @@
+---
+title: "New project workflow"
+---
+
+This guide will cover a suggested workflow for when you want to start working on a new project.   
+Specifically, it will cover: 
+
+* Using the `usethis` package
+* Creating a new R-project
+* Using it with git
+* Pushing it to a remote repositry using github
+* Using `renv` to keep track of the packages used in the project
+* Suggesting a simple git workflow for collaborating on your project 
+
+Let's get started!
+

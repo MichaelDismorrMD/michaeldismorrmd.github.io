@@ -41,6 +41,10 @@ website:
             - guides/setup/setup_4.qmd
             - guides/setup/setup_5.qmd
             - guides/setup/setup_6.qmd
+        - section: "New project"
+          contents: 
+            - guides/new_project/new_project_1.qmd
+            - guides/new_project/new_project_2.qmd
 
 format:
   html:

@@ -22,4 +22,22 @@ This will be much faster the next time you use it, and definitely faster than cl
 
 ![Opening RStudio through spotlight](rstudio_spotlight.png)
 
+Once opened, click the `Tools` menu, and then click `Global Options`.  
+In the `General` section, uncheck `Restore most recently opened project at startup`,  
+`Restore previously open source documents at startup`, `Restore .RData inte workspace at  startup:`, and select `Save workspace to .RData on exit: Never`.  
+Then click apply. 
+
+![Global Options](global_options.png){width=60%}
+
+Now we will install our first two packages, `renv` and `usethis`. `renv` will keep track of the dependencies in our future projects, and `usethis` will assist us in our workflow when creating new projects (or R-packages). In the console type:
+```{.bash filename="Install renv"}
+install.packages("renv")
+```
+
+```{.bash filename="Install usethis"}
+install.packages("usethis")
+```
+
+
+
 This marks the end of this Setup guide. In the following section, we will go through a suggested workflow when starting a new project.
