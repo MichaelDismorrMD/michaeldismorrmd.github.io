@@ -329,6 +329,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 <p>In the upper right corner, it should say <code>Project: (None)</code>. Now, we will use the <code>usethis</code> package to create a new project, track it with git, and upload it to GitHub.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Beware
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the following to work, you must have the folder <code>my_git</code> and <code>subfolder</code> where <code>subfolder</code> should be your first name. See <a href="../../guides/setup/setup_3.html">here</a> at the bottom of the page if you have not yet created them.</p>
+</div>
+</div>
 <p>In the console, write:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">create_project</span>(<span class="st">"my_git/subfolder/project_name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -352,7 +365,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">"dplyr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>When finishing for the day, register all new packages with <code>renv::snapshot()</code>, save and close R-Studio, and then in the terminal do <code>git add .</code>, <code>git commit -m "Begining on my new project</code>, and last <code>git push</code>.</p>
+<p>When finishing for the day, register all new packages with <code>renv::snapshot()</code>, save and close R-Studio, and then in the terminal do <code>git add .</code>, <code>git commit -m "Beginning on my new project</code>, and last <code>git push</code>.</p>
 <p>That marks the end of this guide. In the following section, I will demonstrate a suggested workflow when being invited to collaborate on a project.</p>
 
 
