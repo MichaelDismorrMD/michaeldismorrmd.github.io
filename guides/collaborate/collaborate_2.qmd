@@ -1,0 +1,12 @@
+---
+title: "Syncing dependencies using renv"
+---
+
+Now we have cloned the project, and if the owner has used `renv` to track packages and versions, we can leverage this to get the same versions. 
+Write `renv::status` to see if the project uses `renv` (usually it will say your project is out of sync in the console as the project starts up), 
+and then type `renv::restore` to download and install all required packages in the same versions as logged in the lockfile. 
+
+![renv::status()](rstudio_renv.png)
+
+Then you do your work, remember to add any newly used (and installed) packages using `renv::snapshot()`, save your files, and close RStudio. 
+Next, we will go through how to push up your changes and then avoid any conflicts in your code. 

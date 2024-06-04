@@ -1,0 +1,35 @@
+---
+title: "Clone project using gh-cli"
+---
+
+This section will guide you through how to set up when you've been invited to collaborate on a new project. 
+As I mentioned in the previous section, I like to keep a folder structure to keep track of the repo owner, that is, who created and likely leads the project. 
+If I have invited you to collaborate, you should make sure you have a folder like this `~/my_git/Michael`. 
+
+First, open your terminal using spotlight by pressing {{< kbd "Command+Space" >}} and type in terminal. 
+
+![Open terminal using spotlight](spotlight_terminal.png)
+
+Type `ls` to confirm the `my_git` folder exists. If it does type `cd my_git` to go into it, otherwise first type `mkdir my_git` to create it. 
+Once in the `my_git` folder, type `ls` again to see if the `Michael` folder exists, otherwise create it using `mkdir` and go into it using `cd`. 
+
+![Going into the my_git folder](terminal_my_git.png)
+
+Now, we are going to clone to repository to our computer. If you already know the GitHub name and repo name that you have been invited to, you can type:
+```{.bash}
+gh repo clone Username/repo_name
+```
+
+I often find myself not knowing either the username nor the repo name, so I list all repos I have access to using the `repo-name` alias we set up in the [Setup Guide](../setup/setup_4.qmd). 
+
+```{.bash}
+gh repo-names
+```
+
+Once it has finished cloning, go into the `repo_name` folder and then open RStudio.
+```{.bash}
+cd repo-name
+open repo-name.RProj
+```
+
+

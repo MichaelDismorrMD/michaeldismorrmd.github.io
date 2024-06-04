@@ -45,7 +45,11 @@ website:
           contents: 
             - guides/new_project/new_project_1.qmd
             - guides/new_project/new_project_2.qmd
-
+        - section: "Collaborate"
+          contents: 
+            - guides/collaborate/collaborate_1.qmd
+            - guides/collaborate/collaborate_2.qmd
+            - guides/collaborate/collaborate_3.qmd
 format:
   html:
     theme: cosmo

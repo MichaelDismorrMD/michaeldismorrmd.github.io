@@ -13,9 +13,40 @@ In the console, write:
 
 ```{r}
 #| eval: false
-usethis::create_project()
+usethis::create_project("my_git/subfolder/project_name")
 ```
 
- 
+This will create and open a new R-project in `~/my_git/subfolder/project_name`. The folder structure is up to you, personally, I like to keep all git-repos in sub-folders of `my_git`, and where `subfolder` is the name of the repo owner, so in this case it would be `~/my_git/Michael/project_name`. 
+
+In the console of the newly opened R-Studio (which now should have `project_name` in the upper right corner), write:
+```{r}
+#| eval: false
+
+usethis::use_git()
+```
+
+![use_git()](use_git.png)
+
+Next, link it to Github (use option `private = T` if you want to create a private repo):
+
+```{r}
+#| eval: false
+
+usethis::use_github(private = T)
+```
+
+
+Now you are ready to create your first file, press {{< kbd "Shift+Command+p" >}} and select `Create a New R Script`.
+I recommend keeping track of dependencies using `renv`, so install any packages needed by typing in the Console: 
+
+```{r}
+#| eval: false
+
+renv::install("dplyr")
+```
+
+When finishing for the day, register all new packages with `renv::snapshot()`, save and close R-Studio, and then in the terminal do `git add .`, `git commit -m "Begining on my new project`, and last `git push`. 
+
+That marks the end of this guide. In the following section, I will demonstrate a suggested workflow when being invited to collaborate on a project. 
 
 

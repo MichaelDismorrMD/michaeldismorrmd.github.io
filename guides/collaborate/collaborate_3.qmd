@@ -1,0 +1,42 @@
+---
+title: "Working with git"
+---
+
+
+When you have closed RStudio after your work, it's time to push your changes to GitHub using git, so that your collaborators can see and use what you have been working on. 
+
+In the terminal, add any new files using `git add .`, the . here can be interpreted as "everything". 
+Next, it is time to give our changes a message, `git commit -m "Added new analyses"`. 
+Lastly, we push it to Github `git push`. 
+
+![Adding changes with git](terminal_git.png)
+
+This is a diagram depicting a typical workflow with git. Typically, you would start your day at **1** and finish at **6**.
+```{dot}
+digraph CircularProcess {
+    layout=circo;
+    label="Git workflow";
+    labelloc="t";
+    fontsize=35;
+    mindist=2;
+    node [shape=box, fontsize=20, margin=0.2];
+    edge [fontsize=20, margin=0.5]
+    
+    A [label=<<B>1<BR/> Pull latest changes</B><BR/>git pull>];
+    B [label=<<B>2<BR/> Update any new dependencies</B><BR/>renv::restore()>];
+    C [label=<<B>3<BR/> Register any new packages</B><BR/>renv::snapshot>];
+    D [label=<<B>4<BR/> Add any untracked files</B><BR/>git add .>];
+    E [label=<<B>5<BR/> Commit your changes</B><BR/>git commit -m "Adds new analyses">];
+    F [label=<<B>6<BR/> Push your changes to GitHub</B><BR/>git push>];
+    
+    A -> B [label="open project_name.RProj"];
+    B -> C [label="Do your work"];
+    C -> D [label="Close RStudio and go back to terminal"];
+    D -> E;
+    E -> F;
+    F -> A [label="Start over"];
+    
+
+}
+```
+
