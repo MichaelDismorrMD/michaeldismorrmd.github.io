@@ -7,7 +7,7 @@ First, we use spotlight to open RStudio (unless it's already open).
 ![Open RStudio](spotlight_rstudio.png)
 
 In the upper right corner, it should say `Project: (None)`. 
-Now, we will use this `usethis` package to create a new project, track it with git, and upload it to GitHub. 
+Now, we will use the `usethis` package to create a new project, track it with git, and upload it to GitHub. 
 
 In the console, write: 
 

@@ -6,13 +6,13 @@ about:
   image-shape: round
   links:
     - icon: twitter-x
-      text: X
+      # text: X
       href: https://x.com/MichaelDismorr
     # - icon: github
     #   text: GitHub
     #   href: https://github.com
     - icon: linkedin
-      text: LinkedIn
+      # text: LinkedIn
       href: https://www.linkedin.com/in/michaeldismorr
 ---
 
