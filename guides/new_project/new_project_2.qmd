@@ -50,7 +50,7 @@ I recommend keeping track of dependencies using `renv`, so install any packages 
 renv::install("dplyr")
 ```
 
-When finishing for the day, register all new packages with `renv::snapshot()`, save and close R-Studio, and then in the terminal do `git add .`, `git commit -m "Begining on my new project`, and last `git push`. 
+When finishing for the day, register all new packages with `renv::snapshot()`, save and close R-Studio, and then in the terminal do `git add .`, `git commit -m "Beginning on my new project`, and last `git push`. 
 
 That marks the end of this guide. In the following section, I will demonstrate a suggested workflow when being invited to collaborate on a project. 
 
