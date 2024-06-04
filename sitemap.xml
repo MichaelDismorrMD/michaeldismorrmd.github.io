@@ -2,7 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://michaeldismorrmd.github.io/blog_start.html</loc>
-    <lastmod>2024-06-03T10:42:31.334Z</lastmod>
+    <lastmod>2024-06-04T10:58:00.033Z</lastmod>
+  </url>
+  <url>
+    <loc>https://michaeldismorrmd.github.io/guides/new_project/new_project_1.html</loc>
+    <lastmod>2024-06-04T05:21:33.301Z</lastmod>
   </url>
   <url>
     <loc>https://michaeldismorrmd.github.io/guides/setup/guides.html</loc>
@@ -25,12 +29,16 @@
     <lastmod>2024-06-03T10:56:31.696Z</lastmod>
   </url>
   <url>
+    <loc>https://michaeldismorrmd.github.io/posts/implement-euroscore2-risk-score-in-r/index.html</loc>
+    <lastmod>2024-06-04T10:31:34.408Z</lastmod>
+  </url>
+  <url>
     <loc>https://michaeldismorrmd.github.io/posts/age-and-sex-adjusted-incidence-rates/index.html</loc>
     <lastmod>2024-06-03T06:21:11.270Z</lastmod>
   </url>
   <url>
     <loc>https://michaeldismorrmd.github.io/index.html</loc>
-    <lastmod>2024-06-03T10:30:16.458Z</lastmod>
+    <lastmod>2024-06-04T10:47:39.889Z</lastmod>
   </url>
   <url>
     <loc>https://michaeldismorrmd.github.io/guides/setup/setup_3.html</loc>
@@ -38,7 +46,7 @@
   </url>
   <url>
     <loc>https://michaeldismorrmd.github.io/guides/setup/setup_6.html</loc>
-    <lastmod>2024-06-03T06:21:11.265Z</lastmod>
+    <lastmod>2024-06-04T05:21:33.303Z</lastmod>
   </url>
   <url>
     <loc>https://michaeldismorrmd.github.io/guides/setup/setup_4.html</loc>
@@ -47,5 +55,9 @@
   <url>
     <loc>https://michaeldismorrmd.github.io/guides/guides.html</loc>
     <lastmod>2024-06-03T06:58:18.900Z</lastmod>
+  </url>
+  <url>
+    <loc>https://michaeldismorrmd.github.io/guides/new_project/new_project_2.html</loc>
+    <lastmod>2024-06-04T10:47:50.162Z</lastmod>
   </url>
 </urlset>

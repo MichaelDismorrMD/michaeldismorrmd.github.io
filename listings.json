@@ -2,6 +2,7 @@
   {
     "listing": "/blog_start.html",
     "items": [
+      "/posts/implement-euroscore2-risk-score-in-r/index.html",
       "/posts/publication-ready-tables-with-flextable-and-own-theme/index.html",
       "/posts/age-and-sex-adjusted-incidence-rates/index.html"
     ]

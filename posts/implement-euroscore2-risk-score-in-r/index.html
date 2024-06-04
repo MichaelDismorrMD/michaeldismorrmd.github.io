@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Dismorr">
+<meta name="author" content="Ruixin Lu">
+<meta name="dcterms.date" content="2024-06-04">
+
+<title>michaeldismorrmd.github.io - Implement EuroSCORE II risk score in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">michaeldismorrmd.github.io</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">About me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog_start.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../guides/guides.html"> 
+<span class="menu-text">Guides</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools-item" href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io">
+            Source Code
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools-item" href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new">
+            Report a Bug
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Implement EuroSCORE II risk score in R</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">risk-score</div>
+                <div class="quarto-category">euroscore</div>
+                <div class="quarto-category">logistic-regression</div>
+                <div class="quarto-category">odds</div>
+                <div class="quarto-category">odds-ratios</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Authors</div>
+      <div class="quarto-title-meta-contents">
+               <p>Michael Dismorr </p>
+               <p>Ruixin Lu </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 4, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+
+<p>Today, I will show you a way to implement the <a href="https://www.euroscore.org">EuroSCORE II</a> risk score in R. EuroSCORE is a risk score that tries to predict mortality after cardiac surgery, and is used in clincal practice to assess individual risk before surgery. This helps inform the patient (and surgeon) about the expected risk, and can also contribute in the decision making whether the patient will likely benefit the most from surgery, or some other procedure such as transcatheter aortic valve implantation (TAVI), depending on the issue at hand and co-morbidities. If you just want to download function with same test data, you can do so <a href="calc_euroscore.R">here</a>.</p>
+<blockquote class="blockquote">
+<p>EuroSCORE was created following a collaboration by researchers at Royal Papworth Hospital in Cambridge UK and the Centre Hospitalier Universitaire de Martinique.</p>
+</blockquote>
+<p>Since it’s conception, it has been updated several times. The latest version is called the EuroSCORE II, and it is a logistic regression model. As stated in the <a href="https://academic.oup.com/ejcts/article/41/4/734/646622">original publication</a> of EuroSCORE II:</p>
+<blockquote class="blockquote">
+<p>Cardiac surgical mortality has significantly reduced in the last 15 years despite older and sicker patients. EuroSCORE II is better calibrated than the original model yet preserves powerful discrimination. It is proposed for the future assessment of cardiac surgical risk.</p>
+</blockquote>
+<p>As you might know, a logistic model estimates the <span class="math inline">\(\log\text{odds}\)</span>, and it’s linear predictor can be written as:</p>
+<p><span class="math display">\[\log\text{odds} = \beta_0 + \beta_1X_1 + \beta_2X_2 + ... \beta_iX_i\]</span></p>
+<p>Consequently, the <span class="math inline">\(e^{\beta_i}\)</span> can be interpreted as the odds ratio if all other covariates are held constant.</p>
+<p>Let’s also do a quick recap what odds actually are. Odds are usually expressed as <span class="math inline">\(\frac{events}{non-events}\)</span>. Compare this to risk, which would be <span class="math inline">\(\frac{events}{events+non-events}\)</span>. So, to convert odds to risk, we can use the formula <span class="math inline">\(Risk=\frac{Odds}{1+Odds}\)</span>.</p>
+<p>Let’s now explore this using R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate some example data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>) <span class="co"># To make the results reproducible</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>example_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">outcome =</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="dv">1</span>, <span class="fl">0.5</span>), <span class="co"># Generate a binary outcome</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">group =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="dv">100</span>, <span class="at">replace =</span> T)) <span class="co"># Generate a random group assignment</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we can manually calculate the odds of the outcome per each group. Note that I will calculate risk using odds <code>risk_1</code>, and just using <span class="math inline">\(Risk=\frac{events}{non-events}\)</span>. Of course, they are identical.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>example_data <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(group) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">events =</span> <span class="fu">sum</span>(outcome <span class="sc">==</span> <span class="dv">1</span>), </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">non_events =</span> <span class="fu">sum</span>(outcome <span class="sc">==</span> <span class="dv">0</span>), </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">odds =</span> events<span class="sc">/</span>non_events, </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">risk =</span> events<span class="sc">/</span>(events<span class="sc">+</span>non_events), </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">risk_1 =</span> odds<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span>odds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  group events non_events  odds  risk risk_1
+  &lt;chr&gt;  &lt;int&gt;      &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+1 A         26         21 1.24  0.553  0.553
+2 B         26         27 0.963 0.491  0.491</code></pre>
+</div>
+</div>
+<p>Now let’s use a logistic regression model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>reg_mod <span class="ot">&lt;-</span> <span class="fu">glm</span>(outcome <span class="sc">~</span> group, <span class="at">data =</span> example_data, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(reg_mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = outcome ~ group, family = "binomial", data = example_data)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)   0.2136     0.2934   0.728    0.467
+groupB       -0.2513     0.4020  -0.625    0.532
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 138.47  on 99  degrees of freedom
+Residual deviance: 138.08  on 98  degrees of freedom
+AIC: 142.08
+
+Number of Fisher Scoring iterations: 3</code></pre>
+</div>
+</div>
+<p>Here we fitted a logistic regression model, where the coefficients can be interpreted as the <code>log(odds)</code>. Now, let’s convert that to odds (or odds ratios):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(reg_mod) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="at">group =</span> term, <span class="at">coef =</span> estimate) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">OR =</span> <span class="fu">exp</span>(coef))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  group         coef    OR
+  &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;
+1 (Intercept)  0.214 1.24 
+2 groupB      -0.251 0.778</code></pre>
+</div>
+</div>
+<p>The <code>(Intercept)</code> here refers to Group A odds, but to obtain the odds for Group B we must add the coefficients together, otherwise it is the odds ratio of Group B over Group A.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(reg_mod<span class="sc">$</span>coefficients[<span class="dv">1</span>]<span class="sc">+</span>reg_mod<span class="sc">$</span>coefficients[<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept) 
+   0.962963 </code></pre>
+</div>
+</div>
+<p>All the numbers are the same as our manual calculation (although the output is rounded differently). Now let’s calculate the risk:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(reg_mod<span class="sc">$</span>coefficients[<span class="dv">1</span>])<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(reg_mod<span class="sc">$</span>coefficients[<span class="dv">1</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept) 
+  0.5531915 </code></pre>
+</div>
+</div>
+<p>This function is actually built-in in the model object itself, and does the calculation much faster (which can be useful if you work with large data sets).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>reg_mod<span class="sc">$</span>family<span class="sc">$</span><span class="fu">linkinv</span>(reg_mod<span class="sc">$</span>coefficients[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept) 
+  0.5531915 </code></pre>
+</div>
+</div>
+<p>Using the linear predictor, the odds of Group A is:</p>
+<p><span class="math display">\[log_{odds}=\beta_0 + \beta_1Group_B*0\]</span> <span class="math display">\[log_{odds[Group A]} = 0.2136 + (-0.2513*0)\]</span></p>
+<p>And consequently, the linear predictor for Group B is:</p>
+<p><span class="math display">\[log_{odds}=\beta_0 + \beta_1Group_B*1\]</span></p>
+<p><span class="math display">\[log_{odds[Group B]} = 0.2136 + (-0.2513*1)\]</span></p>
+<p>Now, let’s implement the results from the EuroSCORE II logistic regression model as a function to estimate the EuroSCORE II in our own data sets. Below are the coefficients as reported by the <a href="https://academic.oup.com/ejcts/article/41/4/734/646622">EuroSCORE II publication</a> They modeled age non-linearly, as stated in the article:</p>
+<blockquote class="blockquote">
+<p>βi the coefficient of the variable Xi, for age, Xi = 1 if patient age ≤60; Xi increases by one point per year thereafter (age 60 or less Xi = 1; age 61 if Xi = 2; age 62 if Xi = 3 and so on).</p>
+</blockquote>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Variable.</th>
+<th>Coefficient</th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>NYHA</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> II</td>
+<td>0.1070545</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td> III</td>
+<td>0.2958358</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> IV</td>
+<td>0.5597929</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>CCS4</td>
+<td>0.2226147</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>IDDM</td>
+<td>0.3542749</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Age</td>
+<td>0.0285181</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Female</td>
+<td>0.2196434</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ECA</td>
+<td>0.5360268</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>CPD</td>
+<td>0.1886564</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>N/M mob</td>
+<td>0.2407181</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Redo</td>
+<td>01.118599</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Renal dysfunction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> On dialysis</td>
+<td>0.6421508</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td> CC ≤ 50</td>
+<td>0.8592256</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> CC 50−85</td>
+<td>0.303553</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>AE</td>
+<td>0.6194522</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Critical</td>
+<td>1.086517</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>LV function</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> Moderate</td>
+<td>0.3150652</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td> Poor</td>
+<td>0.8084096</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> Very poor</td>
+<td>0.9346919</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Recent MI</td>
+<td>0.1528943</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>PA systolic pressure</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td> 31–55 mmHg</td>
+<td>0.1788899</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> ≥55</td>
+<td>0.3491475</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Urgency</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> Urgent</td>
+<td>0.3174673</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td> Emergency</td>
+<td>0.7039121</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> Salvage</td>
+<td>1.362947</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Weight of procedure</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> 1 non-CABG</td>
+<td>0.0062118</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td> 2</td>
+<td>0.5521478</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td> 3+</td>
+<td>0.9724533</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Thoracic aorta</td>
+<td>0.6527205</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Constant</td>
+<td>−5.324537</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Using this information, we can calculate the EuroSCORE II in a function by using a series of <code>mutate()</code> and <code>case_when()</code> statements.</p>
+<div class="cell column-screen-inset-shaded">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>calc_euroscore <span class="ot">&lt;-</span> <span class="cf">function</span>(data.frame) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>   euroscore <span class="ot">&lt;-</span> data.frame <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">est_NYHA =</span> <span class="fu">case_when</span>(EURO_NYHA <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="fl">0.1070545</span>, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                                              EURO_NYHA <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="fl">0.2958358</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                                              EURO_NYHA <span class="sc">==</span> <span class="dv">4</span> <span class="sc">~</span> <span class="fl">0.5597929</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                                              EURO_NYHA <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>                                              EURO_NYHA <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="cn">NA_real_</span>),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_ccs4 =</span> <span class="fu">case_when</span>(EURO_CCS4 <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                                                           <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">0.2226147</span> <span class="sc">*</span> EURO_CCS4),</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_IDDM =</span> <span class="fu">case_when</span>(<span class="fu">is.na</span>(DIABETESINSULIN) <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>                                                           <span class="at">.default =</span> <span class="fl">0.3542749</span> <span class="sc">*</span> DIABETESINSULIN),</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_age =</span> <span class="fu">case_when</span>(EURO_AGE <span class="sc">&lt;=</span> <span class="dv">60</span> <span class="sc">~</span> <span class="fl">0.0285181</span>,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>                                                          EURO_AGE <span class="sc">&gt;</span> <span class="dv">60</span> <span class="sc">~</span> (EURO_AGE <span class="sc">-</span> <span class="dv">59</span>) <span class="sc">*</span> <span class="fl">0.0285181</span>),</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_female =</span> <span class="fu">case_when</span>(EURO_SEX <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="fl">0.2196434</span>,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>                                                             EURO_SEX <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>),</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_eca =</span> <span class="fu">case_when</span>(EURO_EXTRACARDIAC <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>                                                          <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">0.5360268</span> <span class="sc">*</span> EURO_EXTRACARDIAC),</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_cpd =</span> <span class="fu">case_when</span>(EURO_CHRONICPULM <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>                                                          <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">0.1886564</span> <span class="sc">*</span> EURO_CHRONICPULM),</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_neuro =</span> <span class="fu">case_when</span>(EURO_POORMOBILITY <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>                                                            <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">0.2407181</span> <span class="sc">*</span> EURO_POORMOBILITY),</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_PREVCARDSURG =</span> <span class="fu">case_when</span>(EURO_PREVCARDSURG <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>                                                               <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">1.118599</span> <span class="sc">*</span> EURO_PREVCARDSURG),</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_cc =</span> <span class="fu">case_when</span>(DIALYS <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="fl">0.6421508</span>,</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>                                                         EURO_CREATININE_CLEAREANCE <span class="sc">&lt;=</span> <span class="dv">50</span> <span class="sc">~</span> <span class="fl">0.8592256</span>,</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>                                                         EURO_CREATININE_CLEAREANCE <span class="sc">&gt;</span> <span class="dv">50</span> <span class="sc">&amp;</span> EURO_CREATININE_CLEAREANCE <span class="sc">&lt;=</span> <span class="dv">85</span> <span class="sc">~</span> <span class="fl">0.303553</span>,</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>                                                         EURO_CREATININE_CLEAREANCE <span class="sc">&gt;</span> <span class="dv">85</span> <span class="sc">~</span> <span class="dv">0</span>),</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_AE =</span> <span class="fu">case_when</span>(EURO_ENDOCARDITIS <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>                                                         <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">0.6194522</span> <span class="sc">*</span> EURO_ENDOCARDITIS),</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_critical =</span> <span class="fu">case_when</span>(EURO_CRITICAL <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>                                                               <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">1.086517</span> <span class="sc">*</span> EURO_CRITICAL),</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_LV =</span> <span class="fu">case_when</span>(EURO_VK_EJFRACT2 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>                                                         EURO_VK_EJFRACT2 <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="fl">0.3150652</span>,</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>                                                         EURO_VK_EJFRACT2 <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="fl">0.8084096</span>,</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>                                                         EURO_VK_EJFRACT2 <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="fl">0.9346919</span>),</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_hjinf =</span> <span class="fu">case_when</span>(EURO_HJINF <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>                                                            <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">0.1528943</span> <span class="sc">*</span> EURO_HJINF),</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_pulmonchoice =</span> <span class="fu">case_when</span>(EURO_PULMONCHOICE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="dv">0</span>, </span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>                                                                   EURO_PULMONCHOICE <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="fl">0.1788899</span>,</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>                                                                   EURO_PULMONCHOICE <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="fl">0.3491475</span>), </span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_urgency =</span> <span class="fu">case_when</span>(EURO_URGENCY <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>                                                              EURO_URGENCY <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="fl">0.3174673</span>, </span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>                                                              EURO_URGENCY <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="fl">0.7039121</span>,</span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>                                                              EURO_URGENCY <span class="sc">==</span> <span class="dv">4</span> <span class="sc">~</span> <span class="fl">1.362947</span>),</span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_weightofprocedure =</span> <span class="fu">case_when</span>(EURO_WEIGHTOFPROCEDURE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>                                                                        EURO_WEIGHTOFPROCEDURE <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="fl">0.0062118</span>,</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>                                                                        EURO_WEIGHTOFPROCEDURE <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="fl">0.5521478</span>,</span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>                                                                        EURO_WEIGHTOFPROCEDURE <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="fl">0.9724533</span>),</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_THORACALAORTA =</span> <span class="fu">case_when</span>(EURO_THORACALAORTA <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>                                                               <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">0.6527205</span> <span class="sc">*</span> EURO_THORACALAORTA),</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">est_sum =</span> est_NYHA <span class="sc">+</span> est_ccs4 <span class="sc">+</span> est_IDDM <span class="sc">+</span> est_age <span class="sc">+</span> est_female <span class="sc">+</span> est_eca <span class="sc">+</span> est_cpd <span class="sc">+</span> est_neuro <span class="sc">+</span></span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>                                                est_PREVCARDSURG <span class="sc">+</span> est_cc <span class="sc">+</span> est_AE <span class="sc">+</span> est_critical <span class="sc">+</span> est_LV <span class="sc">+</span> est_hjinf <span class="sc">+</span> est_pulmonchoice <span class="sc">+</span></span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>                                                est_urgency <span class="sc">+</span> est_weightofprocedure <span class="sc">+</span> est_THORACALAORTA,</span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">euro_new =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">5.324537</span> <span class="sc">+</span> est_sum)<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">5.324537</span> <span class="sc">+</span> est_sum)),</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">euro_new =</span> <span class="fu">round</span>(euro_new <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>                                      <span class="fu">pull</span>(euro_new)</span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>                                      </span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">return</span>(euroscore)</span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s try it out on a dummy data set:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">EURO_NYHA =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">9</span>),</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_CCS4 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">DIABETESINSULIN =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_AGE =</span> <span class="fu">c</span>(<span class="dv">70</span>, <span class="dv">9</span>), </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_SEX =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>),  </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_EXTRACARDIAC =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_CHRONICPULM =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">9</span>),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_POORMOBILITY =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_PREVCARDSURG =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                             <span class="at">DIALYS =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>), </span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_CREATININE_CLEAREANCE =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">40</span>), </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_ENDOCARDITIS =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">9</span>), </span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_CRITICAL =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">9</span>), </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_VK_EJFRACT2 =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_HJINF =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_PULMONCHOICE =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_URGENCY =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_WEIGHTOFPROCEDURE =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>                             <span class="at">EURO_THORACALAORTA =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="fu">calc_euroscore</span>(test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 89.32    NA</code></pre>
+</div>
+</div>
+<p>This is the same result as on the <a href="https://www.euroscore.org/index.php?id=17&amp;lang=en">EuroSCORE II calculator:</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="calculator.png" class="img-fluid figure-img"></p>
+<figcaption>EuroSCORE II calculator</figcaption>
+</figure>
+</div>
+<p>A few closing remarks. You have to decide before hand how you want to handle missing data. In the current implementation, if anything is missing it will not calculate a EuroSCORE. In most cases, it might be reasonable to prepare the data set with <code>replace_na()</code> to chose some sort of default value. I would also like to thank our PhD student, Ruixin Lu for the help with developing this function when we needed it for one of our projects.</p>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/michaeldismorrmd\.github\.io");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/edit/main/posts/implement-euroscore2-risk-score-in-r/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
