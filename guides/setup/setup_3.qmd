@@ -27,6 +27,17 @@ Don't try and enter it again, as it will be entered two times.
 ![Terminal](terminal.png){width=60%}
 
 If no errors were encountered, you have now successfully installed the `brew` command. 
+While we are in the terminal, let's prepare a folder structure we will use later on.
+First, we will create the `my_git` folder where all yours and others projects will be placed. 
+```{.bash filename="Create my_git folder"}
+mkdir my_git
+```
+
+Then, we will move into that folder, and create a new folder with your first name. This is where we will create your first project later.
+```{.bash filename="Create your folder within the my_git folder"}
+cd my_git
+mkdir Michael
+```
 
 
 
