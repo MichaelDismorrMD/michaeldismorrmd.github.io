@@ -24,7 +24,7 @@ digraph CircularProcess {
     
     A [label=<<B>1<BR/> Pull latest changes</B><BR/>git pull>];
     B [label=<<B>2<BR/> Update any new dependencies</B><BR/>renv::restore()>];
-    C [label=<<B>3<BR/> Register any new packages</B><BR/>renv::snapshot>];
+    C [label=<<B>3<BR/> Register any new packages</B><BR/>renv::snapshot()>];
     D [label=<<B>4<BR/> Add any untracked files</B><BR/>git add .>];
     E [label=<<B>5<BR/> Commit your changes</B><BR/>git commit -m "Adds new analyses">];
     F [label=<<B>6<BR/> Push your changes to GitHub</B><BR/>git push>];
