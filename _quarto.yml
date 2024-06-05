@@ -3,6 +3,8 @@ project:
 
 website:
   title: "michaeldismorrmd.github.io"
+  google-analytics: "G-3B6S9J2FMH"
+  cookie-consent: true
   site-url: https://michaeldismorrmd.github.io
   repo-url: https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io
   repo-actions: [edit, issue]
