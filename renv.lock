@@ -133,6 +133,16 @@
       ],
       "Hash": "df49e3306f232ec28f1604e36a202847"
     },
+    "RcppParallel": {
+      "Package": "RcppParallel",
+      "Version": "5.1.7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "a45594a00f5dbb073d5ec9f48592a08a"
+    },
     "SparseM": {
       "Package": "SparseM",
       "Version": "1.84",
@@ -1101,6 +1111,17 @@
       ],
       "Hash": "ad4b6d757624221aec6220b8c78defeb"
     },
+    "lamW": {
+      "Package": "lamW",
+      "Version": "2.2.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Rcpp",
+        "RcppParallel"
+      ],
+      "Hash": "00028cc2fd50f97b789c55f700458d29"
+    },
     "later": {
       "Package": "later",
       "Version": "1.3.2",
@@ -1205,6 +1226,21 @@
         "rlang"
       ],
       "Hash": "e2817ccf4a065c5d9d7f2cfbe7c1d78c"
+    },
+    "mexhaz": {
+      "Package": "mexhaz",
+      "Version": "2.6",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "MASS",
+        "lamW",
+        "numDeriv",
+        "splines",
+        "statmod",
+        "survival"
+      ],
+      "Hash": "13eb051524878d4347428de5d196aa08"
     },
     "mgcv": {
       "Package": "mgcv",
@@ -1725,6 +1761,18 @@
         "R"
       ],
       "Hash": "5f5a7629f956619d519205ec475fe647"
+    },
+    "statmod": {
+      "Package": "statmod",
+      "Version": "1.5.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "graphics",
+        "stats"
+      ],
+      "Hash": "26e158d12052c279bdd4ba858b80fb1f"
     },
     "stringi": {
       "Package": "stringi",
