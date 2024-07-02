@@ -2,13 +2,13 @@
 title: "Regression standardization with the mexhaz package"
 author: "Michael Dismorr"
 date: "2024-06-28"
-# date-modified: "2024-06-01"
+date-modified: "2024-07-01"
 categories: [R, regression-standardization, survival-analysis]
 image: survdiff.jpeg
 # draft: true
 ---
 
-In this post, I will demonstrate how to use the `mexhaz` package to estimate regression-standardized survival curves. In future posts, I will also cover how to achieve this using the `rstpm2`, `stdReg`, and `marginaleffects` packages for various outcome measures, including in a competing risk setting.
+In this post, I will demonstrate how to use the [`mexhaz`](https://cran.r-project.org/package=mexhaz) package to estimate regression-standardized survival curves. In future posts, I will also cover how to achieve this using the `rstpm2`, `stdReg`, and `marginaleffects` packages for various outcome measures, including in a competing risk setting.
 
 First, let's discuss what regression standardization is and why it is useful. As you may know, a common method to analyze and visualize survival data is by constructing a Kaplan-Meier curve. Since Kaplan-Meier estimates are crude, these curves are often combined with a hazard ratio from a Cox regression to determine if there is a statistically significant difference in survival between treatment groups.
 
@@ -62,9 +62,9 @@ myCols <- c("Difference" = "#7570b3",
 
 survfit2(Surv(follow_up_years, event) ~ treatment, data = data) %>% 
   ggsurvfit(key_glyph = "rect", linewidth = 0.8) + 
-  add_pvalue(location = "annotation") + 
   scale_ggsurvfit(x_scales = list(limits = c(0, 10), 
                                   breaks = seq(0, 10, by = 2))) + 
+  add_pvalue(location = "annotation") + 
   theme_pubr() + 
   add_risktable() + 
   scale_color_manual(aesthetics = c("fill", "color"), 
