@@ -77,6 +77,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/social-share-0.1.0/social-share.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/social-share-0.1.0/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -224,6 +226,12 @@ cookieconsent.run({
       </div>
     </div>
     
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">July 1, 2024</p>
+      </div>
+    </div>
       
     </div>
     
@@ -241,7 +249,7 @@ cookieconsent.run({
 
 
 
-<p>In this post, I will demonstrate how to use the <code>mexhaz</code> package to estimate regression-standardized survival curves. In future posts, I will also cover how to achieve this using the <code>rstpm2</code>, <code>stdReg</code>, and <code>marginaleffects</code> packages for various outcome measures, including in a competing risk setting.</p>
+<p>In this post, I will demonstrate how to use the <a href="https://cran.r-project.org/package=mexhaz"><code>mexhaz</code></a> package to estimate regression-standardized survival curves. In future posts, I will also cover how to achieve this using the <code>rstpm2</code>, <code>stdReg</code>, and <code>marginaleffects</code> packages for various outcome measures, including in a competing risk setting.</p>
 <p>First, let’s discuss what regression standardization is and why it is useful. As you may know, a common method to analyze and visualize survival data is by constructing a Kaplan-Meier curve. Since Kaplan-Meier estimates are crude, these curves are often combined with a hazard ratio from a Cox regression to determine if there is a statistically significant difference in survival between treatment groups.</p>
 <p>One way to provide “adjusted” survival curves is by stratifying, i.e., creating several Kaplan-Meier curves based on a categorical variable, such as age over or under 50. While this approach might be appropriate in certain cases, it is not feasible to adjust for many covariates this way or for continuous covariates, as it would produce numerous curves with very few patients represented in each.</p>
 <p>Another option is to calculate a survival curve from a hazard model, such as Cox regression. This involves fitting a model and using it to predict a survival curve at different follow-up times. For example, we could predict survival for a 50-year-old man with Treatment A and diabetes, and then draw the same curve for a 50-year-old man with Treatment B and diabetes. Although this estimates survival for a particular individual, it is incorrect to assume that using mean values (such as mean age) will yield a mean effect estimate for the population under study. To estimate the treatment effect in the population, we can instead use regression standardization.</p>
@@ -339,7 +347,7 @@ Data
 
 Details
  Iter Eval   Base Nb.Leg Nb.Aghq Optim Method Code    LogLik Total.Time
-    5    8 exp.bs     20      10   nlm    ---    1 -1950.525      0.026</code></pre>
+    5    8 exp.bs     20      10   nlm    ---    1 -1950.525      0.037</code></pre>
 </div>
 </div>
 <p>Next, we use the <code>adjsurv</code> function to perform the regression standardization.</p>
@@ -845,6 +853,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+<div class="page-columns page-rows-contents page-layout-article"><div class="social-share"><a href="https://twitter.com/share?url=&amp;text=Regression standardization with the mexhaz package" target="_blank" class="twitter"><i class="fab fa-twitter fa-fw fa-lg"></i></a><a href="https://www.linkedin.com/shareArticle?url=&amp;title=Regression standardization with the mexhaz package" target="_blank" class="linkedin"><i class="fab fa-linkedin fa-fw fa-lg"></i></a><a href="mailto:?subject=Regression standardization with the mexhaz package&amp;body=Check out this link: " target="_blank" class="email"><i class="fa-solid fa-envelope fa-fw fa-lg"></i></a></div></div>    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if ("" === "") {
+            var currentUrl = window.location.href;
+            var links = document.querySelectorAll('.social-share a');
+            links.forEach(function(link) {
+                var href = link.getAttribute('href');
+                if (link.classList.contains('email')) {
+                    link.setAttribute('href', 'mailto:?subject=Regression standardization with the mexhaz package&body=Check out this link: ' + encodeURIComponent(currentUrl));
+                } else {
+                    link.setAttribute('href', href.replace('url=', 'url=' + encodeURIComponent(currentUrl)));
+                }
+            });
+        }
+    });
+    </script>
+    
 
 
 

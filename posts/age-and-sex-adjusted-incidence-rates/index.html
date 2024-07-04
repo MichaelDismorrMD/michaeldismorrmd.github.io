@@ -77,6 +77,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/social-share-0.1.0/social-share.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/social-share-0.1.0/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -481,9 +483,9 @@ window.Quarto = {
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">age_sex_adjust</span>(colon_death, rx, age, sex, status, time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Treatment        IR  Lower_CI  Upper_CI
-1   Lev+5FU  8.245483  6.786784  9.704182
+1   Lev+5FU  8.245483  6.786801  9.704165
 2       Obs 12.211861 10.362612 14.061109
-3       Lev 11.819634  9.990691 13.648577</code></pre>
+3       Lev 11.819634  9.990693 13.648575</code></pre>
 </div>
 </div>
 <p>Here we see that the adjusted rates are very similar to the crude rates calculated above. Since this data comes from a randomized trial, this is expected and can be taken as a sign that the randomization worked.</p>
@@ -960,6 +962,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+<div class="page-columns page-rows-contents page-layout-article"><div class="social-share"><a href="https://twitter.com/share?url=&amp;text=Age-, and sex-adjusted incidence rates" target="_blank" class="twitter"><i class="fab fa-twitter fa-fw fa-lg"></i></a><a href="https://www.linkedin.com/shareArticle?url=&amp;title=Age-, and sex-adjusted incidence rates" target="_blank" class="linkedin"><i class="fab fa-linkedin fa-fw fa-lg"></i></a><a href="mailto:?subject=Age-, and sex-adjusted incidence rates&amp;body=Check out this link: " target="_blank" class="email"><i class="fa-solid fa-envelope fa-fw fa-lg"></i></a></div></div>    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if ("" === "") {
+            var currentUrl = window.location.href;
+            var links = document.querySelectorAll('.social-share a');
+            links.forEach(function(link) {
+                var href = link.getAttribute('href');
+                if (link.classList.contains('email')) {
+                    link.setAttribute('href', 'mailto:?subject=Age-, and sex-adjusted incidence rates&body=Check out this link: ' + encodeURIComponent(currentUrl));
+                } else {
+                    link.setAttribute('href', href.replace('url=', 'url=' + encodeURIComponent(currentUrl)));
+                }
+            });
+        }
+    });
+    </script>
+    
 
 
 

@@ -10,7 +10,850 @@
 <atom:link href="https://michaeldismorrmd.github.io/blog_start-r.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.5.45</generator>
-<lastBuildDate>Thu, 27 Jun 2024 21:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 01 Jul 2024 21:00:00 GMT</lastBuildDate>
+<item>
+  <title>Regression standardization with the rstpm2 package</title>
+  <dc:creator>Michael Dismorr</dc:creator>
+  <link>https://michaeldismorrmd.github.io/posts/regression-standardization-with-rstpm2/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>This post will be another example of how to perform regression standardization in a survival analysis setting, this time using the <a href="https://cran.r-project.org/package=rstpm2"><code>rstpm2</code></a> package. In case you didn’t see the previous post that describes what regression standardization is, look <a href="../../posts/regression-standardization-with-mexhaz/index.html">here first</a>.</p>
+<p>Let’s start be recreating the simulated data set from the last post.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(dplyr)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(forcats)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(rstpm2)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(survival)</span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggsurvfit)</span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggpubr)</span>
+<span id="cb1-7"></span>
+<span id="cb1-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12345</span>)</span>
+<span id="cb1-9"></span>
+<span id="cb1-10">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span></span>
+<span id="cb1-11"></span>
+<span id="cb1-12">data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(</span>
+<span id="cb1-13">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">age =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">89</span>, n<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">74</span>, n<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)),</span>
+<span id="cb1-14">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">treatment =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.factor</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Treatment A"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Treatment B"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">each =</span> n<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)),</span>
+<span id="cb1-15">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sex =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Male"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Female"</span>), n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>),</span>
+<span id="cb1-16">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diabetes =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb1-17">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb1-18">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Shuffle the rows to mix Treatment A and Treatment B groups</span></span>
+<span id="cb1-19">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slice_sample</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n =</span> n) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb1-20">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate follow-up time, depending on treatment group and age. </span></span>
+<span id="cb1-21">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">follow_up_time =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ifelse</span>(treatment <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Treatment A"</span>,</span>
+<span id="cb1-22">                                       <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rexp</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">rate =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1200</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (age <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>)),</span>
+<span id="cb1-23">                                       <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rexp</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">rate =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1200</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (age <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>)))),</span>
+<span id="cb1-24">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">follow_up_time =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ifelse</span>(follow_up_time <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, follow_up_time), </span>
+<span id="cb1-25">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">follow_up_years =</span> follow_up_time <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365.25</span>,</span>
+<span id="cb1-26">         <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Event probability increases with age</span></span>
+<span id="cb1-27">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">event =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rbinom</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prob =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plogis</span>((age <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)))</span></code></pre></div>
+</div>
+<p>As last time, it seems like patients who received Treatment B had better survival compared to patients who received Treatment A (p = 0.006) in crude analysis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">myCols <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Difference"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#7570b3"</span>, </span>
+<span id="cb2-2">            <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Treatment A"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#1b9e77"</span>, </span>
+<span id="cb2-3">            <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Treatment B"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#e7298a"</span>)</span>
+<span id="cb2-4"></span>
+<span id="cb2-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">survfit2</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Surv</span>(follow_up_years, event) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> treatment, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb2-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggsurvfit</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">key_glyph =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rect"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb2-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_ggsurvfit</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x_scales =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>), </span>
+<span id="cb2-8">                                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb2-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">add_pvalue</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">location =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"annotation"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb2-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_pubr</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb2-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">add_risktable</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb2-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">aesthetics =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fill"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"color"</span>), </span>
+<span id="cb2-13">                     <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> myCols, </span>
+<span id="cb2-14">                     <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Treatment B"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Treatment A"</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://michaeldismorrmd.github.io/posts/regression-standardization-with-rstpm2/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now let’s see how the survival curves look after regression standardization.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Fit the stpm2 flexible parametric survival model</span></span>
+<span id="cb3-2">stpm2_fit <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stpm2</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Surv</span>(follow_up_years, event) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> treatment <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> age <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> diabetes, </span>
+<span id="cb3-3">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data)</span>
+<span id="cb3-4"></span>
+<span id="cb3-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create an empty list to then populate with the predictions given</span></span>
+<span id="cb3-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># the different levels of treatment</span></span>
+<span id="cb3-7">predictions <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">levels</span>(data<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>treatment)))</span>
+<span id="cb3-8"></span>
+<span id="cb3-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Loop over the different treatment levels, </span></span>
+<span id="cb3-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># performing prediction of type "meansurv" on each level</span></span>
+<span id="cb3-11"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span>(i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq_along</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">levels</span>(data<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>treatment))){</span>
+<span id="cb3-12">  index <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">levels</span>(data<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>treatment)[i] </span>
+<span id="cb3-13">  predictions[[i]]  <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(stpm2_fit, </span>
+<span id="cb3-14">                               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"meansurv"</span>, </span>
+<span id="cb3-15">                               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">newdata =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">transform</span>(data, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">treatment =</span> index), </span>
+<span id="cb3-16">                               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">se.fit =</span> T, </span>
+<span id="cb3-17">                               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">grid =</span> T, </span>
+<span id="cb3-18">                               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">full =</span> T) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb3-19">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bind_cols</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">treatment =</span> index)</span>
+<span id="cb3-20">}</span>
+<span id="cb3-21"></span>
+<span id="cb3-22"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Survival difference, newdata - exposed</span></span>
+<span id="cb3-23"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># In this case Treatment B - Treatment A</span></span>
+<span id="cb3-24">surv_diff_plot_data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(stpm2_fit, </span>
+<span id="cb3-25">                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"meansurvdiff"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">grid =</span> T, </span>
+<span id="cb3-26">                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">newdata =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">transform</span>(data, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">treatment =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Treatment B"</span>), </span>
+<span id="cb3-27">                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">exposed =</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span>(df) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">transform</span>(df, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">treatment =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Treatment A"</span>), </span>
+<span id="cb3-28">                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">full =</span> T, </span>
+<span id="cb3-29">                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">se.fit =</span> T)</span></code></pre></div>
+</div>
+<p>Let’s plot the result.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">surv_plot_data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bind_rows</span>(predictions) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">treatment =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.factor</span>(treatment))</span>
+<span id="cb4-3"></span>
+<span id="cb4-4"></span>
+<span id="cb4-5">surv_fig <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> surv_plot_data <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb4-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> follow_up_years, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> Estimate)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> treatment)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_ribbon</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymin =</span> lower, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymax =</span> upper, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> treatment), </span>
+<span id="cb4-9">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> scales<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">label_percent</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">accuracy =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb4-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_pubr</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time (years)"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb4-15">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb4-16">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position.inside =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.85</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.85</span>),</span>
+<span id="cb4-17">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-18">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">aesthetics =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fill"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"color"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> myCols)</span>
+<span id="cb4-19"></span>
+<span id="cb4-20"></span>
+<span id="cb4-21">diff_fig <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> surv_diff_plot_data <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb4-22">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> follow_up_years, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> Estimate)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-23">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> myCols[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Difference"</span>]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-24">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_ribbon</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymin =</span> lower, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymax =</span> upper), </span>
+<span id="cb4-25">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>, </span>
+<span id="cb4-26">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> myCols[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Difference"</span>]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-27">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_hline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">yintercept =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linetype =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-28">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> scales<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">label_percent</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">accuracy =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-29">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb4-30">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_pubr</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-31">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time (years)"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-32">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb4-33">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb4-34">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position.inside =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>),</span>
+<span id="cb4-35">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>))</span>
+<span id="cb4-36"></span>
+<span id="cb4-37"></span>
+<span id="cb4-38">surv_comb <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggarrange</span>(surv_fig, diff_fig, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb4-39">surv_comb</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://michaeldismorrmd.github.io/posts/regression-standardization-with-rstpm2/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="1440"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So after regression standardization adjusting for age, it seems like Treatment A is associated with significantly improved survival compared to Treatment B.</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>regression-standardization</category>
+  <category>survival-analysis</category>
+  <guid>https://michaeldismorrmd.github.io/posts/regression-standardization-with-rstpm2/</guid>
+  <pubDate>Mon, 01 Jul 2024 21:00:00 GMT</pubDate>
+  <media:content url="https://michaeldismorrmd.github.io/posts/regression-standardization-with-rstpm2/rstpm2_code.png" medium="image" type="image/png" height="68" width="144"/>
+</item>
 <item>
   <title>Regression standardization with the mexhaz package</title>
   <dc:creator>Michael Dismorr</dc:creator>
@@ -21,7 +864,7 @@
 
 
 
-<p>In this post, I will demonstrate how to use the <code>mexhaz</code> package to estimate regression-standardized survival curves. In future posts, I will also cover how to achieve this using the <code>rstpm2</code>, <code>stdReg</code>, and <code>marginaleffects</code> packages for various outcome measures, including in a competing risk setting.</p>
+<p>In this post, I will demonstrate how to use the <a href="https://cran.r-project.org/package=mexhaz"><code>mexhaz</code></a> package to estimate regression-standardized survival curves. In future posts, I will also cover how to achieve this using the <code>rstpm2</code>, <code>stdReg</code>, and <code>marginaleffects</code> packages for various outcome measures, including in a competing risk setting.</p>
 <p>First, let’s discuss what regression standardization is and why it is useful. As you may know, a common method to analyze and visualize survival data is by constructing a Kaplan-Meier curve. Since Kaplan-Meier estimates are crude, these curves are often combined with a hazard ratio from a Cox regression to determine if there is a statistically significant difference in survival between treatment groups.</p>
 <p>One way to provide “adjusted” survival curves is by stratifying, i.e., creating several Kaplan-Meier curves based on a categorical variable, such as age over or under 50. While this approach might be appropriate in certain cases, it is not feasible to adjust for many covariates this way or for continuous covariates, as it would produce numerous curves with very few patients represented in each.</p>
 <p>Another option is to calculate a survival curve from a hazard model, such as Cox regression. This involves fitting a model and using it to predict a survival curve at different follow-up times. For example, we could predict survival for a 50-year-old man with Treatment A and diabetes, and then draw the same curve for a 50-year-old man with Treatment B and diabetes. Although this estimates survival for a particular individual, it is incorrect to assume that using mean values (such as mean age) will yield a mean effect estimate for the population under study. To estimate the treatment effect in the population, we can instead use regression standardization.</p>
@@ -497,7 +1340,7 @@ Data
 
 Details
  Iter Eval   Base Nb.Leg Nb.Aghq Optim Method Code    LogLik Total.Time
-    5    8 exp.bs     20      10   nlm    ---    1 -1950.525      0.026</code></pre>
+    5    8 exp.bs     20      10   nlm    ---    1 -1950.525      0.037</code></pre>
 </div>
 </div>
 <p>Next, we use the <code>adjsurv</code> function to perform the regression standardization.</p>
@@ -3581,9 +4424,9 @@ background-color: null;
 font-style: inherit;">age_sex_adjust</span>(colon_death, rx, age, sex, status, time)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Treatment        IR  Lower_CI  Upper_CI
-1   Lev+5FU  8.245483  6.786784  9.704182
+1   Lev+5FU  8.245483  6.786801  9.704165
 2       Obs 12.211861 10.362612 14.061109
-3       Lev 11.819634  9.990691 13.648577</code></pre>
+3       Lev 11.819634  9.990693 13.648575</code></pre>
 </div>
 </div>
 <p>Here we see that the adjusted rates are very similar to the crude rates calculated above. Since this data comes from a randomized trial, this is expected and can be taken as a sign that the randomization worked.</p>
