@@ -146,7 +146,7 @@
     "href": "index.html#education",
     "title": "Michael Dismorr",
     "section": "Education",
-    "text": "Education\nPhD, Cardiothoracic surgery epidemiology | 2017 - 2022\nKarolinska Institutet | Stockholm, Sweden\nMedical school, MD | 2011 - 2016\nKarolinska Institutet | Stockholm, Sweden\nGlobal health, field studies | 2015 - 2016\nKarolinska Institutet | Tanzania"
+    "text": "Education\nPhD, Cardiothoracic surgery epidemiology | 2017 - 2022\nKarolinska Institutet | Stockholm, Sweden\nGlobal health, field studies | 2015 - 2016\nKarolinska Institutet | Tanzania\nMedical school, MD | 2011 - 2016\nKarolinska Institutet | Stockholm, Sweden"
   },
   {
     "objectID": "guides/setup/setup_3.html",
@@ -201,7 +201,7 @@
     "href": "guides/guides.html",
     "title": "Guides",
     "section": "",
-    "text": "Welcome to the guides page. Here are section with guides. They are aimed more at members and students at our research group, and as such does not fit in in the blog section. However, they might still be of help to others who face similar problems.\nThe first section is intended to aid in setting up the necessary software to work with R efficiently.\nThe second section showcases a workflow I prefer when starting new projects.\nMore sections might follow",
+    "text": "Welcome to the guides page.\nThese guides are aimed at members and students at our research group, and in general does not fit in in the blog section. However, they might still be of help to others who face similar problems. We belive this workflow is simple and efficient for beginners.\nThe first section (Setup) is intended to aid in setting up the necessary software to work with R efficiently.\nThe second section (New project) showcases a workflow I prefer when starting new projects.\nAnd the third section (Collaborate) shows a suggested workflow when working with others on the same project.",
     "crumbs": [
       "Guides",
       "Guides"
@@ -230,11 +230,11 @@
     ]
   },
   {
-    "objectID": "guides/guides.html#collaboration",
-    "href": "guides/guides.html#collaboration",
+    "objectID": "guides/guides.html#collaborate",
+    "href": "guides/guides.html#collaborate",
     "title": "Guides",
-    "section": "Collaboration",
-    "text": "Collaboration\n\n\n\n\n\n\n\n\n\n\nClone project using gh-cli\n\n\n\n\n\n\n\n\n\n\n\nJun 1, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nSyncing dependencies using renv\n\n\n\n\n\n\n\n\n\n\n\nJun 2, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nWorking with git\n\n\n\n\n\n\n\n\n\n\n\nJun 3, 2024\n\n\n\n\n\n\nNo matching items",
+    "section": "Collaborate",
+    "text": "Collaborate\n\n\n\n\n\n\n\n\n\n\nClone project using gh-cli\n\n\n\n\n\n\n\n\n\n\n\nJun 1, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nSyncing dependencies using renv\n\n\n\n\n\n\n\n\n\n\n\nJun 2, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nWorking with git\n\n\n\n\n\n\n\n\n\n\n\nJun 3, 2024\n\n\n\n\n\n\nNo matching items",
     "crumbs": [
       "Guides",
       "Guides"
