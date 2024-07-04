@@ -1,5 +1,6 @@
 ---
 title: "Clone project using gh-cli"
+date: "2024-06-01"
 ---
 
 This section will guide you through how to set up when you've been invited to collaborate on a new project. 

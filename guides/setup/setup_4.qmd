@@ -1,5 +1,6 @@
 ---
 title: "Installing gh-cli"
+date: "2024-06-04"
 ---
 
 Now, we will use `brew` to install the github command-line program, [`gh-cli`](https://cli.github.com/manual/).

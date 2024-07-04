@@ -1,5 +1,6 @@
 ---
 title: "Setup guide"
+date: "2024-06-01"
 ---
 
 This guide is intended to help new members of our research group get their environments up and running, 

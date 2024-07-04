@@ -1,5 +1,6 @@
 ---
 title: "Intel or Apple Silicon"
+date: "2024-06-02"
 ---
 
 # "Intel or Apple Silicon"

@@ -2,7 +2,7 @@
 title: "Michael Dismorr"
 about:
   template: trestles
-  image: assets/avatar.jpg
+  image: assets/compressed_avatar.jpg
   image-shape: round
   links:
     - icon: twitter-x

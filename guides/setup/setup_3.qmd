@@ -1,5 +1,6 @@
 ---
 title: "Installing Homebrew"
+date: "2024-06-03"
 ---
 
 Now it's time to install [Homebrew](https://brew.sh). 

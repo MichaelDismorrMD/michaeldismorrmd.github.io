@@ -1,5 +1,6 @@
 ---
 title: "Installing R"
+date: "2024-06-05"
 ---
 
 Now, it's time to install R. 

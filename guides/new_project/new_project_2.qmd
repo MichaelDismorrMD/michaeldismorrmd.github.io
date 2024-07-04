@@ -1,5 +1,6 @@
 ---
 title: "Using the usethis package"
+date: "2024-06-02"
 ---
 
 First, we use spotlight to open RStudio (unless it's already open). 

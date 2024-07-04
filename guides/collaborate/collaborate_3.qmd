@@ -1,5 +1,6 @@
 ---
 title: "Working with git"
+date: "2024-06-03"
 ---
 
 

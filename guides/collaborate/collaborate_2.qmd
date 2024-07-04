@@ -1,5 +1,6 @@
 ---
 title: "Syncing dependencies using renv"
+date: "2024-06-02"
 ---
 
 Now we have cloned the project, and if the owner has used `renv` to track packages and versions, we can leverage this to get the same versions. 

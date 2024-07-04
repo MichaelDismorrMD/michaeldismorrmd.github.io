@@ -1,5 +1,6 @@
 ---
 title: "New project workflow"
+date: "2024-06-01"
 ---
 
 This guide will cover a suggested workflow for when you want to start working on a new project.   
