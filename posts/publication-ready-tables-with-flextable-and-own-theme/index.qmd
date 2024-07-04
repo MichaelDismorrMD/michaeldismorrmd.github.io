@@ -5,6 +5,12 @@ date: "2021-11-23"
 date-modified: "2024-06-01"
 categories: [R, publication-ready, tableone, flextable, tables]
 image: tableone.png
+filters:
+  - social-share
+share:
+  twitter: true
+  linkedin: true
+  email: true
 ---
 
 In this post, I will show you how to make publication-ready using a combination of the [`flextable`](https://cran.r-project.org/package=flextable) package and a function I've written to customize them according to my default layout. This will minimize the need to edit in MS Word, and copy and paste from Excel to Word when exporting tables from R. In this example, I will use the [`tableone`](https://cran.r-project.org/package=tableone) package to show how my `customtab()` function can be used to export Table 1.   

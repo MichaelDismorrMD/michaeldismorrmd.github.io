@@ -5,6 +5,12 @@ date: "2024-06-28"
 date-modified: "2024-07-01"
 categories: [R, regression-standardization, survival-analysis]
 image: survdiff.jpeg
+filters:
+  - social-share
+share:
+  twitter: true
+  linkedin: true
+  email: true
 # draft: true
 ---
 

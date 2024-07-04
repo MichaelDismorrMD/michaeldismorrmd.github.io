@@ -5,6 +5,12 @@ date: "2024-06-04"
 # date-modified: "2024-06-01"
 categories: [R, risk-score, euroscore, logistic-regression, odds, odds-ratios]
 image: calculator.png
+filters:
+  - social-share
+share:
+  twitter: true
+  linkedin: true
+  email: true
 ---
 
 Today, I will show you a way to implement the [EuroSCORE II](https://www.euroscore.org) risk score in R. EuroSCORE is a risk score that tries to predict mortality after cardiac surgery, and is used in clincal practice to assess individual risk before surgery. This helps inform the patient (and surgeon) about the expected risk, and can also contribute in the decision making whether the patient will likely benefit the most from surgery, or some other procedure such as transcatheter aortic valve implantation (TAVI), depending on the issue at hand and co-morbidities.

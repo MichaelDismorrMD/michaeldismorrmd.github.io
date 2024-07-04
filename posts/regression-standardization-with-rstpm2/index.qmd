@@ -5,7 +5,12 @@ date: "2024-07-02"
 # date-modified: "2024-06-01"
 categories: [R, regression-standardization, survival-analysis]
 image: rstpm2_code.png
-draft: true
+filters:
+  - social-share
+share:
+  twitter: true
+  linkedin: true
+  email: true
 ---
 
 This post will be another example of how to perform regression standardization in a survival analysis setting, this time using the [`rstpm2`](https://cran.r-project.org/package=rstpm2) package. In case you didn't see the previous post that describes what regression standardization is, look [here first](../regression-standardization-with-mexhaz/index.qmd). 
