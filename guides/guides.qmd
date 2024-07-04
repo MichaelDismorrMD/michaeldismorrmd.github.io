@@ -18,13 +18,15 @@ listing:
 ---
 
 Welcome to the guides page. 
-Here are section with guides. They are aimed more at members and students at our research group, and as such does not fit in in the blog section. However, they might still be of help to others who face similar problems. 
 
-The first section is intended to aid in setting up the necessary software to work with R efficiently. 
+These guides are aimed at members and students at our research group, and in general does not fit in in the blog section. 
+However, they might still be of help to others who face similar problems. We belive this workflow is simple and efficient for beginners.  
 
-The second section showcases a workflow I prefer when starting new projects. 
+The first section [(Setup)](#setup) is intended to aid in setting up the necessary software to work with R efficiently. 
 
-More sections might follow
+The second section [(New project)](#new-project) showcases a workflow I prefer when starting new projects. 
+
+And the third section [(Collaborate)](#collaborate) shows a suggested workflow when working with others on the same project. 
 
 ## Setup 
 :::{#setup}
@@ -34,6 +36,6 @@ More sections might follow
 :::{#new_project}
 :::
 
-## Collaboration
+## Collaborate
 :::{#collaborate}
 :::
