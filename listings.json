@@ -8,5 +8,21 @@
       "/posts/publication-ready-tables-with-flextable-and-own-theme/index.html",
       "/posts/age-and-sex-adjusted-incidence-rates/index.html"
     ]
+  },
+  {
+    "listing": "/guides/guides.html",
+    "items": [
+      "/guides/setup/setup_1.html",
+      "/guides/setup/setup_2.html",
+      "/guides/setup/setup_3.html",
+      "/guides/setup/setup_4.html",
+      "/guides/setup/setup_5.html",
+      "/guides/setup/setup_6.html",
+      "/guides/new_project/new_project_1.html",
+      "/guides/new_project/new_project_2.html",
+      "/guides/collaborate/collaborate_1.html",
+      "/guides/collaborate/collaborate_2.html",
+      "/guides/collaborate/collaborate_3.html"
+    ]
   }
 ]
