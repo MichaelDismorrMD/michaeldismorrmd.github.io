@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-06-02">
+<meta name="dcterms.date" content="2024-11-15">
 
-<title>Intel or Apple Silicon – michaeldismorrmd.github.io</title>
+<title>Optional - Use pak as the package manager – michaeldismorrmd.github.io</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -31,8 +65,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../guides/setup/setup_3.html" rel="next">
-<link href="../../guides/setup/setup_1.html" rel="prev">
+<link href="../../guides/collaborate/collaborate_1.html" rel="next">
+<link href="../../guides/new_project/new_project_2.html" rel="prev">
 <script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
 <link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
@@ -100,10 +134,10 @@ cookieconsent.run({
 
 
 <link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="michaeldismorrmd.github.io - Intel or Apple Silicon">
+<meta property="og:title" content="michaeldismorrmd.github.io - Optional - Use pak as the package manager">
 <meta property="og:description" content="">
 <meta property="og:site_name" content="michaeldismorrmd.github.io">
-<meta name="twitter:title" content="michaeldismorrmd.github.io - Intel or Apple Silicon">
+<meta name="twitter:title" content="michaeldismorrmd.github.io - Optional - Use pak as the package manager">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
@@ -163,7 +197,7 @@ cookieconsent.run({
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../guides/setup/setup_1.html">Setup Guide</a></li><li class="breadcrumb-item"><a href="../../guides/setup/setup_2.html">Intel or Apple Silicon</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../guides/new_project/new_project_1.html">New project</a></li><li class="breadcrumb-item"><a href="../../guides/new_project/new_project_3.html">Optional - Use pak as the package manager</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -209,7 +243,7 @@ cookieconsent.run({
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../guides/setup/setup_2.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../guides/setup/setup_2.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Intel or Apple Silicon</span></a>
   </div>
 </li>
@@ -262,7 +296,7 @@ cookieconsent.run({
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../guides/new_project/new_project_3.html" class="sidebar-item-text sidebar-link">
+  <a href="../../guides/new_project/new_project_3.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Optional - Use pak as the package manager</span></a>
   </div>
 </li>
@@ -302,21 +336,15 @@ cookieconsent.run({
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#intel-or-apple-silicon" id="toc-intel-or-apple-silicon" class="nav-link active" data-scroll-target="#intel-or-apple-silicon">“Intel or Apple Silicon”</a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/edit/main/guides/setup/setup_2.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../guides/setup/setup_1.html">Setup Guide</a></li><li class="breadcrumb-item"><a href="../../guides/setup/setup_2.html">Intel or Apple Silicon</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../guides/new_project/new_project_1.html">New project</a></li><li class="breadcrumb-item"><a href="../../guides/new_project/new_project_3.html">Optional - Use pak as the package manager</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Intel or Apple Silicon</h1>
+<h1 class="title">Optional - Use pak as the package manager</h1>
 </div>
 
 
@@ -327,7 +355,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 2, 2024</p>
+      <p class="date">November 15, 2024</p>
     </div>
   </div>
   
@@ -339,27 +367,17 @@ cookieconsent.run({
 </header>
 
 
-<section id="intel-or-apple-silicon" class="level1">
-<h1>“Intel or Apple Silicon”</h1>
-<p>Before we move on, you need to determine if your Mac uses Intel or Apple Silicon.</p>
-<p>To do this, click on the  symbol in the upper left corner of the screen, and then click “About this Mac”.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="apple_menu.png" class="img-fluid figure-img"></p>
-<figcaption>Apple menu</figcaption>
-</figure>
+<p>Optionally, you might chose to use <code>pak</code> as the package manager with <code>renv</code>. <code>pak</code> can download packages in parallel, and will speed up both <code>renv::restore()</code> and <code>renv::install()</code>.</p>
+<p>Basically, you just open the <code>.Rprofile</code> in the root of your project folder, and add the line</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">renv.config.pak.enabled =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="about_this_mac.png" class="img-fluid figure-img" style="width:40.0%"></p>
-<figcaption>About this Mac</figcaption>
-</figure>
+<p>before the</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"renv/activate.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>You have an Apple Silicon Mac if the first line says M1, M2 or M3.<br>
-You have an Intel Mac if it says something with Intel.</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -784,13 +802,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../guides/setup/setup_1.html" class="pagination-link" aria-label="Setup guide">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Setup guide</span>
+      <a href="../../guides/new_project/new_project_2.html" class="pagination-link" aria-label="Using the usethis package">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Using the usethis package</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../guides/setup/setup_3.html" class="pagination-link" aria-label="Installing Homebrew">
-        <span class="nav-page-text">Installing Homebrew</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../guides/collaborate/collaborate_1.html" class="pagination-link" aria-label="Clone project using gh-cli">
+        <span class="nav-page-text">Clone project using gh-cli</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -802,7 +820,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>   
     <div class="nav-footer-center">
 
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/edit/main/guides/setup/setup_2.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+<div class="toc-actions"><ul><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/edit/main/guides/new_project/new_project_3.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MichaelDismorrMD/michaeldismorrmd.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
