@@ -1,0 +1,21 @@
+---
+title: "Optional - Use pak as the package manager"
+date: "2024-11-15"
+---
+
+Optionally, you might chose to use `pak` as the package manager with `renv`.
+`pak` can download packages in parallel, and will speed up both `renv::restore()` and `renv::install()`.
+
+Basically, you just open the `.Rprofile` in the root of your project folder, and add the line
+
+```{r}
+#| eval: false
+options(renv.config.pak.enabled = TRUE)
+```
+
+before the 
+```{r}
+#| eval: false
+source("renv/activate.R")
+```
+

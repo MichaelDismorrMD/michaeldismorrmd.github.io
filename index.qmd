@@ -27,7 +27,7 @@ Here I will primarily post guides and tutorials related to epidemiology in R. To
 The [blog](blog_start.qmd) section covers short tutorial-style posts, mostly regarding biostatistics and survival analysis in R.  
 The [guides](guides/guides.qmd) section is aimed towards new members of our research group (and anyone else who finds the information helpful), and is more "course styled".  
 
-For more content like this, check out [R-bloggers](https://www.r-bloggers.com). 
+For more content like this, check out [R-bloggers](https://www.r-bloggers.com){target="_blank"}. 
 
 ## Intrests
 

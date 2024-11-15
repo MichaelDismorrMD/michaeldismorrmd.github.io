@@ -11,7 +11,7 @@ The guide will assume you are very new to computer concepts such as running term
 
 **Before starting, you must:**
 
-1. Register an account at [GitHub](https://github.com)
+1. Register an account at [GitHub](https://github.com){target="_blank"}
 2. Know, or be able to access your GitHub and computer password
 
 
@@ -20,7 +20,7 @@ The guide will assume you are very new to computer concepts such as running term
 * Determine if you use an Intel or Apple silicon Mac
 * Installing Homebrew
 * Installing `gh-cli`
-* Installing R, and chosing the correct version according to if you have Intel or Apple Silicon
+* Installing R, and choose the correct version according to if you have Intel or Apple Silicon
 * Installing RStudio
 
 

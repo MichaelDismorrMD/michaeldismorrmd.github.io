@@ -49,6 +49,7 @@ website:
           contents: 
             - guides/new_project/new_project_1.qmd
             - guides/new_project/new_project_2.qmd
+            - guides/new_project/new_project_3.qmd
         - section: "Collaborate"
           contents: 
             - guides/collaborate/collaborate_1.qmd

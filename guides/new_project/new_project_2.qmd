@@ -10,8 +10,8 @@ First, we use spotlight to open RStudio (unless it's already open).
 In the upper right corner, it should say `Project: (None)`. 
 Now, we will use the `usethis` package to create a new project, track it with git, and upload it to GitHub. 
 
-::: {.callout-important}
-## Beware
+::: {.callout-note}
+## Note
 For the following to work, you must have the folder `my_git` and `subfolder` where `subfolder` should be your first name. See [here](../setup/setup_3.qmd) at the bottom of the page if you have not yet created them. 
 :::
 

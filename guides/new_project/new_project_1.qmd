@@ -9,7 +9,7 @@ Specifically, it will cover:
 * Using the `usethis` package
 * Creating a new R-project
 * Using it with git
-* Pushing it to a remote repositry using github
+* Pushing it to a remote repository using github
 * Using `renv` to keep track of the packages used in the project
 * Suggesting a simple git workflow for collaborating on your project 
 
