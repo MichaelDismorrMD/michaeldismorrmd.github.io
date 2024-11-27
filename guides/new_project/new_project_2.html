@@ -409,11 +409,12 @@ Note
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">use_github</span>(<span class="at">private =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now you are ready to create your first file, press <kbd aria-hidden="true">Shift+Command+p</kbd><span class="visually-hidden">Shift+Command+p</span> and select <code>Create a New R Script</code>. I recommend keeping track of dependencies using <code>renv</code>, so install any packages needed by typing in the Console:</p>
+<p>Now you are ready to create your first file, press <kbd aria-hidden="true">Shift+Command+p</kbd><span class="visually-hidden">Shift+Command+p</span> and select <code>Create a New R Script</code>. I recommend keeping track of dependencies using <code>renv</code>, so start using <code>renv</code> and then install any packages needed by typing in the Console:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">"dplyr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">init</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">"dplyr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>When finishing for the day, register all new packages with <code>renv::snapshot()</code>, save and close R-Studio, and then in the terminal do <code>git add .</code>, <code>git commit -m "Beginning on my new project</code>, and last <code>git push</code>.</p>
+<p>Note that <code>renv::init()</code> only needs to be the one time for each new project to setup the infrastructure needed. When finishing for the day, register all new packages with <code>renv::snapshot()</code>, save and close R-Studio, and then in the terminal do <code>git add .</code>, <code>git commit -m "Beginning on my new project</code>, and last <code>git push</code>.</p>
 <p>That marks the end of this guide. In the following section, I will demonstrate a suggested workflow when being invited to collaborate on a project.</p>
 
 
