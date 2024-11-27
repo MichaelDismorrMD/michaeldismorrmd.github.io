@@ -43,14 +43,14 @@ usethis::use_github(private = T)
 
 
 Now you are ready to create your first file, press {{< kbd "Shift+Command+p" >}} and select `Create a New R Script`.
-I recommend keeping track of dependencies using `renv`, so install any packages needed by typing in the Console: 
+I recommend keeping track of dependencies using `renv`, so start using `renv` and then install any packages needed by typing in the Console: 
 
 ```{r}
 #| eval: false
-
+renv::init()
 renv::install("dplyr")
 ```
-
+Note that `renv::init()` only needs to be the one time for each new project to setup the infrastructure needed.
 When finishing for the day, register all new packages with `renv::snapshot()`, save and close R-Studio, and then in the terminal do `git add .`, `git commit -m "Beginning on my new project`, and last `git push`. 
 
 That marks the end of this guide. In the following section, I will demonstrate a suggested workflow when being invited to collaborate on a project. 
